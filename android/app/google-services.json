@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1082580757845",
+    "project_id": "futter-money-monitoring",
+    "storage_bucket": "futter-money-monitoring.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082580757845:android:23ae4e3342aa96f6ba53dc",
+        "android_client_info": {
+          "package_name": "com.wikugw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1082580757845-m12s1u4jkjqso96d71itunhpgrohp2v5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wikugw",
+            "certificate_hash": "6549191788e7e003bce1e3774a50dc4bf98c0610"
+          }
+        },
+        {
+          "client_id": "1082580757845-kgt1t0aaa0p7547qronddjoemh6obrdm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAghgyMNoKeCbvxN9f_AsoJ5btdL0HtuG0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1082580757845-kgt1t0aaa0p7547qronddjoemh6obrdm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
