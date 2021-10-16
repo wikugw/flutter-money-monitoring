@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import 'app/routes/app_pages.dart';
 
 void main() async {
-  await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: "Application",
-      initialRoute: AppPages.INITIAL,
+      initialRoute: Routes.LOGIN,
       getPages: AppPages.routes,
     );
   }

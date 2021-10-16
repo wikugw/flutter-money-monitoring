@@ -1,0 +1,31 @@
+{
+    "name": "",
+    "email": "",
+    "photoUrl": "",
+    "createdAt": "",
+    "updatedAt": "",
+    "totalEntireSpent": "",
+    "moneyHistory": [
+        {
+            "year": "",
+            "month": "",
+            "monthName": "",
+            "totalInMonth": "",
+            "dates": [
+                {
+                    "date": "",
+                    "records": [
+                        {
+                            "spentName": "",
+                            "total": "",
+                            "attachment": "",
+                            "createdAt": "",
+                            "updatedAt": ""
+                        }
+                    ],
+                    "totalInDay": ""
+                }
+            ]
+        }
+    ]
+}
