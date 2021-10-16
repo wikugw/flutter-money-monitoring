@@ -34,10 +34,8 @@ class MyApp extends StatelessWidget {
             );
           }
         }
-        return GetMaterialApp(
-          title: "Application",
-          initialRoute: Routes.LOGIN,
-          getPages: AppPages.routes,
+        return MaterialApp(
+          home: Scaffold(body: Center(child: CircularProgressIndicator())),
         );
       },
     );

@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 // model
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
@@ -18,11 +19,49 @@ class AuthController extends GetxController {
   var user = UserModel().obs;
 
   Future<bool> autoLogin() async {
-    await googleSignIn.disconnect();
-    await googleSignIn.signOut();
+    // await googleSignIn.disconnect();
+    // await googleSignIn.signOut();
     if (await googleSignIn.isSignedIn()) {
+      var dateNow = DateTime.now();
+
+      String monthName = DateFormat.MMMM().format(dateNow);
+      String monthNumber = DateFormat.M().format(dateNow);
+      String year = DateFormat.y().format(dateNow);
+      // untuk id document
+      String UID = monthName + '-' + year;
+
       loggedInUser = await googleSignIn.signInSilently();
-      print(loggedInUser);
+
+      // Add user to firestore
+      CollectionReference users = firestore.collection('users');
+
+      final currentUser = await users.doc(loggedInUser!.email).get();
+      final currentUserData = currentUser.data() as Map<String, dynamic>;
+
+      user(UserModel.fromJson(currentUserData));
+      user.refresh();
+
+      // check bulan ini apa sudah tersimpan di DB
+      QuerySnapshot moneyHistoryRef = await users
+          .doc(loggedInUser!.email)
+          .collection('moneyHistory')
+          .where('month', isEqualTo: monthNumber)
+          .where('year', isEqualTo: year)
+          .get();
+
+      if (moneyHistoryRef.docs.length == 0) {
+        await users
+            .doc(loggedInUser!.email)
+            .collection('moneyHistory')
+            .doc(UID)
+            .set({
+          "year": year,
+          "month": monthNumber,
+          "monthName": monthName,
+          "totalInMonth": 0.toString(),
+        });
+      }
+
       return true;
     }
     return false;
@@ -52,6 +91,9 @@ class AuthController extends GetxController {
       final checkUser = await users.doc(loggedInUser!.email).get();
 
       if (checkUser.data() != null) {
+        await users.doc(loggedInUser!.email).update({
+          "updatedAt": dateNow,
+        });
       } else {
         await users.doc(loggedInUser!.email).set({
           "name": loggedInUser!.displayName,
