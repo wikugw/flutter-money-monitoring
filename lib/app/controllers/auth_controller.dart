@@ -18,6 +18,8 @@ class AuthController extends GetxController {
   var user = UserModel().obs;
 
   Future<bool> autoLogin() async {
+    await googleSignIn.disconnect();
+    await googleSignIn.signOut();
     if (await googleSignIn.isSignedIn()) {
       loggedInUser = await googleSignIn.signInSilently();
       print(loggedInUser);
@@ -27,10 +29,10 @@ class AuthController extends GetxController {
   }
 
   Future<bool> gmailLogin() async {
+    String dateNow = DateTime.now().toIso8601String();
     try {
       // Trigger the authentication flow
       loggedInUser = await googleSignIn.signIn();
-      print(loggedInUser);
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth =
@@ -42,8 +44,31 @@ class AuthController extends GetxController {
         idToken: googleAuth.idToken,
       );
 
-      // Once signed in, return the UserCredential
+      // Add user to firestore
+      CollectionReference users = firestore.collection('users');
+
+      print(loggedInUser);
       await auth.signInWithCredential(credential);
+      final checkUser = await users.doc(loggedInUser!.email).get();
+
+      if (checkUser.data() != null) {
+      } else {
+        await users.doc(loggedInUser!.email).set({
+          "name": loggedInUser!.displayName,
+          "email": loggedInUser!.email,
+          "photoUrl": loggedInUser!.photoUrl,
+          "createdAt": dateNow,
+          "updatedAt": dateNow,
+          "totalEntireSpent": 0.toString(),
+        });
+      }
+
+      final currentUser = await users.doc(loggedInUser!.email).get();
+      final currentUserData = currentUser.data() as Map<String, dynamic>;
+
+      user(UserModel.fromJson(currentUserData));
+      user.refresh();
+      print(user);
 
       return true;
     } catch (e) {
