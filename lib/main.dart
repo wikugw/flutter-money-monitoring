@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'app/controllers/auth_controller.dart';
 import 'app/routes/app_pages.dart';
 
 void main() async {
@@ -12,14 +13,30 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+  final authC = Get.put(AuthController(), permanent: true);
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: "Application",
-      initialRoute: Routes.LOGIN,
-      getPages: AppPages.routes,
-    );
+    return FutureBuilder(
+        future: authC.autoLogin(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data == true) {
+              return GetMaterialApp(
+                title: "Application",
+                initialRoute: Routes.HOME,
+                getPages: AppPages.routes,
+              );
+            } else {
+              GetMaterialApp(
+                title: "Application",
+                initialRoute: Routes.LOGIN,
+                getPages: AppPages.routes,
+              );
+            }
+          }
+          return Center(child: CircularProgressIndicator());
+        });
   }
 }
+
+// 

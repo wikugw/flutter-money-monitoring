@@ -6,7 +6,7 @@ import 'package:money_monitoring/app/controllers/auth_controller.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
-  final authC = Get.put(AuthController(), permanent: true);
+  final authC = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
