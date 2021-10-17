@@ -20,8 +20,8 @@ class AuthController extends GetxController {
   var user = UserModel().obs;
 
   Future<bool> autoLogin() async {
-    await googleSignIn.disconnect();
-    await googleSignIn.signOut();
+    // await googleSignIn.disconnect();
+    // await googleSignIn.signOut();
     if (await googleSignIn.isSignedIn()) {
       loggedInUser = await googleSignIn.signInSilently();
 

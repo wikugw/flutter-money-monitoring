@@ -17,6 +17,7 @@
                     "records": [
                         {
                             "spentName": "",
+                            "spentType": "",
                             "total": "",
                             "attachment": "",
                             "createdAt": "",
