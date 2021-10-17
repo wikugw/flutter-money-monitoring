@@ -18,10 +18,11 @@ class AddSpendingController extends GetxController {
     // print(params['currentMonthId']);
 
     DocumentReference userDocRef =
-        firestore.collection('users').doc(params['loggedInEmail']);
+        await firestore.collection('users').doc(params['loggedInEmail']);
 
-    DocumentReference monthDocRef =
-        userDocRef.collection('moneyHistory').doc(params['currentMonthId']);
+    DocumentReference monthDocRef = await userDocRef
+        .collection('moneyHistory')
+        .doc(params['currentMonthId']);
 
     var dateNow = DateTime.now();
     String stringDateNow = dateNow.toIso8601String();
@@ -31,17 +32,19 @@ class AddSpendingController extends GetxController {
     // untuk id document
     String UID = dateNumber + '-' + monthName + '-' + year;
 
-    CollectionReference dateDocRef = monthDocRef.collection('dates');
+    CollectionReference dateDocRef = await monthDocRef.collection('dates');
 
     QuerySnapshot todayDocRecord =
-        await dateDocRef.where('date', isEqualTo: stringDateNow).get();
+        await dateDocRef.where('dateNumber', isEqualTo: dateNumber).get();
 
     // tambah data hari ini ke DB
     if (todayDocRecord.docs.length == 0) {
-      await dateDocRef.doc(UID).set({"date": stringDateNow, "totalInDay": 0});
+      await dateDocRef.doc(UID).set(
+          {"date": stringDateNow, "totalInDay": 0, "dateNumber": dateNumber});
     }
 
-    DocumentReference currentDayDoc = dateDocRef.doc(UID);
+    DocumentReference currentDayDoc = await dateDocRef.doc(UID);
+    // print(dateDocRef.get());
 
     // tambah record
     await currentDayDoc.collection('records').add({
@@ -62,7 +65,9 @@ class AddSpendingController extends GetxController {
 
     // tambah pengeluaran perbulan
     int spentInMonth = 0;
-    monthDocRef.get().then((value) => spentInMonth = value['totalInMonth']);
+    await monthDocRef
+        .get()
+        .then((value) => spentInMonth = value['totalInMonth']);
     await monthDocRef
         .update({"totalInMonth": spentInMonth + int.parse(priceC.text)});
 

@@ -58,12 +58,24 @@ class HomeController extends GetxController {
               .collection('dates')
               .get();
 
-          print('panjang monthdaterecord');
-          print(currentMonthDateRecord.docs.length);
-
           List<Dates> DatePerMonthHistoryList = [];
           if (currentMonthDateRecord.docs.length > 0) {
             currentMonthDateRecord.docs.forEach((element) {
+              // todo - memasukkan pembelian ke tiap hari
+
+              // List<Dates> SpentItemPerDay = [];
+              // if (currentMonthDateRecord.docs.length > 0) {
+              //   currentMonthDateRecord.docs.forEach((element) {
+              //     var dateRecord = element.data() as Map<String, dynamic>;
+              //     DatePerMonthHistoryList.add(
+              //       Dates(
+              //         date: dateRecord['date'],
+              //         totalInDay: dateRecord['totalInDay'],
+              //       ),
+              //     );
+              //   });
+              // }
+
               var dateRecord = element.data() as Map<String, dynamic>;
               DatePerMonthHistoryList.add(
                 Dates(
@@ -77,8 +89,6 @@ class HomeController extends GetxController {
           currentMonthRecord.update((val) {
             val!.dates = DatePerMonthHistoryList;
           });
-
-          print(currentMonthRecord.value.dates?.length);
         }
       }
     }

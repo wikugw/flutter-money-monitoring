@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:money_monitoring/app/controllers/auth_controller.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
 import 'package:money_monitoring/app/routes/app_pages.dart';
@@ -32,10 +33,18 @@ class HomeView extends GetView<HomeController> {
                   : ListView.builder(
                       itemCount: currentMonthRecord.dates?.length,
                       itemBuilder: (context, index) {
-                        print('kesini');
-                        return ListTile(
-                          title: Text(
-                              '${currentMonthRecord.dates?[index].totalInDay}'),
+                        var day = currentMonthRecord.dates?[index];
+                        return ExpansionTile(
+                          title: Text('${day!.totalInDay}'),
+                          subtitle: Text(
+                            DateFormat.yMMMMd().format(
+                              DateTime.parse(day.date!),
+                            ),
+                          ),
+                          // children: List.generate(
+                          //   day.records!.length,
+                          //   (index) => Text('data'),
+                          // ),
                         );
                       }),
             ),
