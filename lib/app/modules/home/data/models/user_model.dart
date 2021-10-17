@@ -120,6 +120,7 @@ class Dates {
 
 class Records {
   String? spentName;
+  String? spentType;
   String? total;
   String? attachment;
   String? createdAt;
@@ -127,6 +128,7 @@ class Records {
 
   Records(
       {this.spentName,
+      this.spentType,
       this.total,
       this.attachment,
       this.createdAt,
@@ -134,6 +136,7 @@ class Records {
 
   Records.fromJson(Map<String, dynamic> json) {
     spentName = json['spentName'];
+    spentType = json['spentType'];
     total = json['total'];
     attachment = json['attachment'];
     createdAt = json['createdAt'];
@@ -143,6 +146,7 @@ class Records {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['spentName'] = spentName;
+    data['spentType'] = spentType;
     data['total'] = total;
     data['attachment'] = attachment;
     data['createdAt'] = createdAt;

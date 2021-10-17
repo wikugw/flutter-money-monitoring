@@ -5,10 +5,16 @@ import 'package:get/get.dart';
 class AddSpendingController extends GetxController {
   late TextEditingController spentNameC;
   late TextEditingController priceC;
+  var spentTypeC = "".obs;
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<void> addSpending(String loggedInEmail) async {
+  Future<void> addSpending(params) async {
+    print(spentTypeC);
+    print(spentNameC.text);
+    print(priceC.text);
+    print(params['loggedInEmail']);
+    print(params['currentMonthId']);
     // final currentUser = await firestore.collection('users').doc(loggedInEmail).collection('moneyHistory').doc()
   }
 

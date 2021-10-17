@@ -30,6 +30,7 @@ class HomeController extends GetxController {
       moneyHistoryRef.docs.forEach((element) {
         var moneyHistory = element.data();
         moneyHistoryList.add(MoneyHistory(
+          id: moneyHistory['id'],
           year: moneyHistory['year'],
           month: moneyHistory['month'],
           monthName: moneyHistory['monthName'],

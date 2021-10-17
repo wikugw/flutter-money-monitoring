@@ -34,7 +34,8 @@ class HomeView extends GetView<HomeController> {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () => Get.toNamed(Routes.ADD_SPENDING, arguments: {
-                authC.user.value.email,
+                "loggedInEmail": authC.user.value.email,
+                "currentMonthId": currentMonthRecord.id,
               }),
             ),
           );

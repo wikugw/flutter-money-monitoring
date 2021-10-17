@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,6 +21,23 @@ class AddSpendingView extends GetView<AddSpendingController> {
             TextField(
               controller: controller.spentNameC,
               decoration: InputDecoration(labelText: 'Nama pengeluaran'),
+            ),
+            SizedBox(height: 25),
+            DropdownSearch<String>(
+              mode: Mode.BOTTOM_SHEET,
+              items: [
+                "Kehidupan",
+                "Makanan/Minuman",
+                "Kebutuhan",
+                'Lain - lain'
+              ],
+              label: "Jenis Pengeluaran",
+              onChanged: (String? value) {
+                if (value != null) {
+                  controller.spentTypeC.value = value;
+                }
+              },
+              selectedItem: controller.spentTypeC.value,
             ),
             SizedBox(height: 5),
             TextField(
