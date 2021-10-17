@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
     return FutureBuilder(
       future: authC.autoLogin(),
       builder: (context, snapshot) {
+        print(snapshot);
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data == true) {
             return GetMaterialApp(
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
               getPages: AppPages.routes,
             );
           } else {
-            GetMaterialApp(
+            return GetMaterialApp(
               title: "Application",
               initialRoute: Routes.LOGIN,
               getPages: AppPages.routes,

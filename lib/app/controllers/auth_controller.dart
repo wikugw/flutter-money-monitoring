@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
 
 import 'package:get/get.dart';
+import 'package:money_monitoring/app/routes/app_pages.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -19,17 +20,9 @@ class AuthController extends GetxController {
   var user = UserModel().obs;
 
   Future<bool> autoLogin() async {
-    // await googleSignIn.disconnect();
-    // await googleSignIn.signOut();
+    await googleSignIn.disconnect();
+    await googleSignIn.signOut();
     if (await googleSignIn.isSignedIn()) {
-      var dateNow = DateTime.now();
-
-      String monthName = DateFormat.MMMM().format(dateNow);
-      String monthNumber = DateFormat.M().format(dateNow);
-      String year = DateFormat.y().format(dateNow);
-      // untuk id document
-      String UID = monthName + '-' + year;
-
       loggedInUser = await googleSignIn.signInSilently();
 
       // Add user to firestore
@@ -42,33 +35,48 @@ class AuthController extends GetxController {
       user.refresh();
 
       // check bulan ini apa sudah tersimpan di DB
-      QuerySnapshot moneyHistoryRef = await users
-          .doc(loggedInUser!.email)
-          .collection('moneyHistory')
-          .where('month', isEqualTo: monthNumber)
-          .where('year', isEqualTo: year)
-          .get();
-
-      if (moneyHistoryRef.docs.length == 0) {
-        await users
-            .doc(loggedInUser!.email)
-            .collection('moneyHistory')
-            .doc(UID)
-            .set({
-          "id": UID,
-          "year": year,
-          "month": monthNumber,
-          "monthName": monthName,
-          "totalInMonth": 0.toString(),
-        });
-      }
+      checkOrCreateMonthRecord();
 
       return true;
     }
     return false;
   }
 
-  Future<bool> gmailLogin() async {
+  Future<void> checkOrCreateMonthRecord() async {
+    // Add user to firestore
+    CollectionReference users = firestore.collection('users');
+
+    var dateNow = DateTime.now();
+
+    String monthName = DateFormat.MMMM().format(dateNow);
+    String monthNumber = DateFormat.M().format(dateNow);
+    String year = DateFormat.y().format(dateNow);
+    // untuk id document
+    String UID = monthName + '-' + year;
+
+    QuerySnapshot moneyHistoryRef = await users
+        .doc(loggedInUser!.email)
+        .collection('moneyHistory')
+        .where('month', isEqualTo: monthNumber)
+        .where('year', isEqualTo: year)
+        .get();
+
+    if (moneyHistoryRef.docs.length == 0) {
+      await users
+          .doc(loggedInUser!.email)
+          .collection('moneyHistory')
+          .doc(UID)
+          .set({
+        "id": UID,
+        "year": year,
+        "month": monthNumber,
+        "monthName": monthName,
+        "totalInMonth": 0,
+      });
+    }
+  }
+
+  Future<void> gmailLogin() async {
     String dateNow = DateTime.now().toIso8601String();
     try {
       // Trigger the authentication flow
@@ -102,7 +110,7 @@ class AuthController extends GetxController {
           "photoUrl": loggedInUser!.photoUrl,
           "createdAt": dateNow,
           "updatedAt": dateNow,
-          "totalEntireSpent": 0.toString(),
+          "totalEntireSpent": 0,
         });
       }
 
@@ -113,10 +121,13 @@ class AuthController extends GetxController {
       user.refresh();
       print(user);
 
-      return true;
+      // check bulan ini apa sudah tersimpan di DB
+      checkOrCreateMonthRecord();
+
+      Get.offAllNamed(Routes.HOME);
     } catch (e) {
       print(e);
-      return false;
+      Get.defaultDialog(title: 'Login Error', middleText: '$e');
     }
   }
 }

@@ -4,7 +4,7 @@ class UserModel {
   String? photoUrl;
   String? createdAt;
   String? updatedAt;
-  String? totalEntireSpent;
+  int? totalEntireSpent;
   List<MoneyHistory>? moneyHistory;
 
   UserModel(
@@ -50,7 +50,7 @@ class MoneyHistory {
   String? year;
   String? month;
   String? monthName;
-  String? totalInMonth;
+  int? totalInMonth;
   List<Dates>? dates;
   String? id;
 
@@ -92,7 +92,7 @@ class MoneyHistory {
 class Dates {
   String? date;
   List<Records>? records;
-  String? totalInDay;
+  int? totalInDay;
 
   Dates({this.date, this.records, this.totalInDay});
 
