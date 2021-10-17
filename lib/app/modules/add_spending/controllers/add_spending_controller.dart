@@ -17,11 +17,11 @@ class AddSpendingController extends GetxController {
     // print(params['loggedInEmail']);
     // print(params['currentMonthId']);
 
-    DocumentReference monthDocRef = firestore
-        .collection('users')
-        .doc(params['loggedInEmail'])
-        .collection('moneyHistory')
-        .doc(params['currentMonthId']);
+    DocumentReference userDocRef =
+        firestore.collection('users').doc(params['loggedInEmail']);
+
+    DocumentReference monthDocRef =
+        userDocRef.collection('moneyHistory').doc(params['currentMonthId']);
 
     var dateNow = DateTime.now();
     String stringDateNow = dateNow.toIso8601String();
@@ -61,8 +61,29 @@ class AddSpendingController extends GetxController {
         .update({"totalInDay": spentInDay + int.parse(priceC.text)});
 
     // tambah pengeluaran perbulan
+    int spentInMonth = 0;
+    monthDocRef.get().then((value) => spentInMonth = value['totalInMonth']);
+    await monthDocRef
+        .update({"totalInMonth": spentInMonth + int.parse(priceC.text)});
+
     // tambah pengeluaran peruser
+    int userSpent = 0;
+    await userDocRef
+        .get()
+        .then((value) => userSpent = value['totalEntireSpent']);
+    await userDocRef
+        .update({"totalEntireSpent": userSpent + int.parse(priceC.text)});
+
     // dialog berhasil
+    Get.defaultDialog(
+      title: 'Berhasil',
+      middleText: 'Berhasil menanmbah pengeluaran',
+      onConfirm: () {
+        Get.back();
+        Get.back();
+      },
+      textConfirm: 'Kembali ke halaman utama',
+    );
     // return ke home
   }
 

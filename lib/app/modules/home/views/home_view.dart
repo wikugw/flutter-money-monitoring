@@ -16,21 +16,28 @@ class HomeView extends GetView<HomeController> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           var currentMonthRecord = snapshot.data;
+          print('di view');
+          print(currentMonthRecord!.dates?.length);
           return Scaffold(
             appBar: AppBar(
               title: Text('HomeView'),
               centerTitle: true,
             ),
             body: Center(
-              child: (currentMonthRecord!.dates == null)
+              child: (currentMonthRecord.dates == null)
                   ? Text(
                       'Tidak ada data',
                       style: TextStyle(fontSize: 20),
                     )
-                  : Text(
-                      'ada data',
-                      style: TextStyle(fontSize: 20),
-                    ),
+                  : ListView.builder(
+                      itemCount: currentMonthRecord.dates?.length,
+                      itemBuilder: (context, index) {
+                        print('kesini');
+                        return ListTile(
+                          title: Text(
+                              '${currentMonthRecord.dates?[index].totalInDay}'),
+                        );
+                      }),
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () => Get.toNamed(Routes.ADD_SPENDING, arguments: {

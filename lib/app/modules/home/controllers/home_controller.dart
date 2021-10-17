@@ -6,7 +6,7 @@ import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
 class HomeController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   var user = UserModel().obs;
-  MoneyHistory currentMonthRecord = MoneyHistory();
+  var currentMonthRecord = MoneyHistory().obs;
 
   Future<MoneyHistory> getCurrentMonthRecord(String loggedInEmail) async {
     CollectionReference users = firestore.collection('users');
@@ -46,12 +46,43 @@ class HomeController extends GetxController {
       val!.moneyHistory = moneyHistoryList;
     });
 
-    user.value.moneyHistory?.forEach((element) {
-      if (element.month == monthNumber && element.year == year) {
-        currentMonthRecord = element;
+    if (user.value.moneyHistory != null) {
+      for (var element in user.value.moneyHistory!) {
+        if (element.month == monthNumber && element.year == year) {
+          currentMonthRecord.value = element;
+
+          QuerySnapshot currentMonthDateRecord = await users
+              .doc(loggedInEmail)
+              .collection('moneyHistory')
+              .doc(currentMonthRecord.value.id)
+              .collection('dates')
+              .get();
+
+          print('panjang monthdaterecord');
+          print(currentMonthDateRecord.docs.length);
+
+          List<Dates> DatePerMonthHistoryList = [];
+          if (currentMonthDateRecord.docs.length > 0) {
+            currentMonthDateRecord.docs.forEach((element) {
+              var dateRecord = element.data() as Map<String, dynamic>;
+              DatePerMonthHistoryList.add(
+                Dates(
+                  date: dateRecord['date'],
+                  totalInDay: dateRecord['totalInDay'],
+                ),
+              );
+            });
+          }
+
+          currentMonthRecord.update((val) {
+            val!.dates = DatePerMonthHistoryList;
+          });
+
+          print(currentMonthRecord.value.dates?.length);
+        }
       }
-    });
-    return currentMonthRecord;
+    }
+    return currentMonthRecord.value;
 
     // return user.value;
   }
