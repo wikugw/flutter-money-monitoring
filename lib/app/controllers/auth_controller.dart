@@ -55,6 +55,7 @@ class AuthController extends GetxController {
             .collection('moneyHistory')
             .doc(UID)
             .set({
+          "id": UID,
           "year": year,
           "month": monthNumber,
           "monthName": monthName,

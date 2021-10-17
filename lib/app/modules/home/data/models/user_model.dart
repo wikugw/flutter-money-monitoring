@@ -52,11 +52,18 @@ class MoneyHistory {
   String? monthName;
   String? totalInMonth;
   List<Dates>? dates;
+  String? id;
 
   MoneyHistory(
-      {this.year, this.month, this.monthName, this.totalInMonth, this.dates});
+      {this.id,
+      this.year,
+      this.month,
+      this.monthName,
+      this.totalInMonth,
+      this.dates});
 
   MoneyHistory.fromJson(Map<String, dynamic> json) {
+    id = json[''];
     year = json['year'];
     month = json['month'];
     monthName = json['monthName'];

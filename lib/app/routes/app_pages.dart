@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import 'package:money_monitoring/app/modules/add_spending/bindings/add_spending_binding.dart';
+import 'package:money_monitoring/app/modules/add_spending/views/add_spending_view.dart';
 import 'package:money_monitoring/app/modules/home/bindings/home_binding.dart';
 import 'package:money_monitoring/app/modules/home/views/home_view.dart';
 import 'package:money_monitoring/app/modules/login/bindings/login_binding.dart';
@@ -22,6 +24,11 @@ class AppPages {
       name: _Paths.LOGIN,
       page: () => LoginView(),
       binding: LoginBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_SPENDING,
+      page: () => AddSpendingView(),
+      binding: AddSpendingBinding(),
     ),
   ];
 }

@@ -8,7 +8,7 @@ class HomeController extends GetxController {
   var user = UserModel().obs;
   MoneyHistory currentMonthRecord = MoneyHistory();
 
-  Future<UserModel> getCurrentMonthRecord(String loggedInEmail) async {
+  Future<MoneyHistory> getCurrentMonthRecord(String loggedInEmail) async {
     CollectionReference users = firestore.collection('users');
 
     var dateNow = DateTime.now();
@@ -50,7 +50,8 @@ class HomeController extends GetxController {
         currentMonthRecord = element;
       }
     });
+    return currentMonthRecord;
 
-    return user.value;
+    // return user.value;
   }
 }
