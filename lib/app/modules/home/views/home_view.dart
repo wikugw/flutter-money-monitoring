@@ -17,23 +17,22 @@ class HomeView extends GetView<HomeController> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           var currentMonthRecord = snapshot.data;
-          print('di view');
-          print(currentMonthRecord!.dates?.length);
+          print(currentMonthRecord?.dates?.length);
           return Scaffold(
             appBar: AppBar(
               title: Text('HomeView'),
               centerTitle: true,
             ),
             body: Center(
-              child: (currentMonthRecord.dates == null)
+              child: (currentMonthRecord?.dates == null)
                   ? Text(
                       'Tidak ada data',
                       style: TextStyle(fontSize: 20),
                     )
                   : ListView.builder(
-                      itemCount: currentMonthRecord.dates?.length,
+                      itemCount: currentMonthRecord?.dates?.length,
                       itemBuilder: (context, index) {
-                        var day = currentMonthRecord.dates?[index];
+                        var day = currentMonthRecord?.dates?[index];
                         return ExpansionTile(
                           title: Text('${day!.totalInDay}'),
                           subtitle: Text(
@@ -41,17 +40,21 @@ class HomeView extends GetView<HomeController> {
                               DateTime.parse(day.date!),
                             ),
                           ),
-                          // children: List.generate(
-                          //   day.records!.length,
-                          //   (index) => Text('data'),
-                          // ),
+                          children: List.generate(
+                            day.records!.length,
+                            (index) => ListTile(
+                              title: Text('${day.records![index].spentName}'),
+                              subtitle:
+                                  Text('Rp. ${day.records![index].total}'),
+                            ),
+                          ),
                         );
                       }),
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () => Get.toNamed(Routes.ADD_SPENDING, arguments: {
                 "loggedInEmail": authC.user.value.email,
-                "currentMonthId": currentMonthRecord.id,
+                "currentMonthId": currentMonthRecord!.id,
               }),
             ),
           );

@@ -46,53 +46,84 @@ class HomeController extends GetxController {
       val!.moneyHistory = moneyHistoryList;
     });
 
-    if (user.value.moneyHistory != null) {
-      for (var element in user.value.moneyHistory!) {
-        if (element.month == monthNumber && element.year == year) {
-          currentMonthRecord.value = element;
+    try {
+      if (user.value.moneyHistory != null) {
+        for (var element in user.value.moneyHistory!) {
+          if (element.month == monthNumber && element.year == year) {
+            currentMonthRecord.value = element;
 
-          QuerySnapshot currentMonthDateRecord = await users
-              .doc(loggedInEmail)
-              .collection('moneyHistory')
-              .doc(currentMonthRecord.value.id)
-              .collection('dates')
-              .get();
+            QuerySnapshot currentMonthDateRecord = await users
+                .doc(loggedInEmail)
+                .collection('moneyHistory')
+                .doc(currentMonthRecord.value.id)
+                .collection('dates')
+                .get();
 
-          List<Dates> DatePerMonthHistoryList = [];
-          if (currentMonthDateRecord.docs.length > 0) {
-            currentMonthDateRecord.docs.forEach((element) {
-              // todo - memasukkan pembelian ke tiap hari
+            List<Dates> DatePerMonthHistoryList = [];
+            if (currentMonthDateRecord.docs.length > 0) {
+              for (var dayInMonthElement in currentMonthDateRecord.docs) {
+                print(dayInMonthElement.id);
+                int day = 0;
 
-              // List<Dates> SpentItemPerDay = [];
-              // if (currentMonthDateRecord.docs.length > 0) {
-              //   currentMonthDateRecord.docs.forEach((element) {
-              //     var dateRecord = element.data() as Map<String, dynamic>;
-              //     DatePerMonthHistoryList.add(
-              //       Dates(
-              //         date: dateRecord['date'],
-              //         totalInDay: dateRecord['totalInDay'],
-              //       ),
-              //     );
-              //   });
-              // }
+                var dateRecord =
+                    dayInMonthElement.data() as Map<String, dynamic>;
+                print(dateRecord);
+                DatePerMonthHistoryList.add(
+                  Dates(
+                    date: dateRecord['date'],
+                    totalInDay: dateRecord['totalInDay'],
+                  ),
+                );
 
-              var dateRecord = element.data() as Map<String, dynamic>;
-              DatePerMonthHistoryList.add(
-                Dates(
-                  date: dateRecord['date'],
-                  totalInDay: dateRecord['totalInDay'],
-                ),
-              );
+                QuerySnapshot currentRecordPerDay = await users
+                    .doc(loggedInEmail)
+                    .collection('moneyHistory')
+                    .doc(currentMonthRecord.value.id)
+                    .collection('dates')
+                    .doc(dayInMonthElement.id)
+                    .collection('records')
+                    .get();
+
+                print('---- panjang item dibeli perhari');
+                print(currentRecordPerDay.docs.length);
+
+                List<Records> SpentItemPerDay = [];
+                if (currentRecordPerDay.docs.length > 0) {
+                  print('ngecek pembelian perhari');
+                  for (var item in currentRecordPerDay.docs) {
+                    print(day);
+                    print('--record item perhari');
+                    print(DatePerMonthHistoryList[day].totalInDay);
+                    var itemRecord = item.data() as Map<String, dynamic>;
+                    print(itemRecord);
+                    SpentItemPerDay.add(Records(
+                      spentName: itemRecord['spentName'],
+                      spentType: itemRecord['spentType'],
+                      total: itemRecord['total'],
+                      attachment: itemRecord['attachment'],
+                      createdAt: itemRecord['createdAt'],
+                      updatedAt: itemRecord['updatedAt'],
+                    ));
+                  }
+                  Dates haha = DatePerMonthHistoryList[day];
+                  haha.records = SpentItemPerDay;
+                  print(haha.records);
+                }
+                day++;
+              }
+            }
+
+            currentMonthRecord.update((val) {
+              val!.dates = DatePerMonthHistoryList;
             });
           }
-
-          currentMonthRecord.update((val) {
-            val!.dates = DatePerMonthHistoryList;
-          });
         }
       }
+      return currentMonthRecord.value;
+    } catch (e) {
+      print(e);
+      return currentMonthRecord.value;
     }
-    return currentMonthRecord.value;
 
     // return user.value;
   }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:money_monitoring/app/routes/app_pages.dart';
 
 class AddSpendingController extends GetxController {
   late TextEditingController spentNameC;
@@ -27,7 +28,7 @@ class AddSpendingController extends GetxController {
     var dateNow = DateTime.now();
     String stringDateNow = dateNow.toIso8601String();
     String monthName = DateFormat.MMMM().format(dateNow);
-    String dateNumber = DateFormat.M().format(dateNow);
+    String dateNumber = DateFormat.d().format(dateNow);
     String year = DateFormat.y().format(dateNow);
     // untuk id document
     String UID = dateNumber + '-' + monthName + '-' + year;
@@ -52,7 +53,8 @@ class AddSpendingController extends GetxController {
       "total": int.parse(priceC.text),
       "attachment": "",
       "createdAt": stringDateNow,
-      "updatedAt": stringDateNow
+      "updatedAt": stringDateNow,
+      "spentType": spentTypeC.value,
     });
 
     int spentInDay = 0;
@@ -85,7 +87,7 @@ class AddSpendingController extends GetxController {
       middleText: 'Berhasil menanmbah pengeluaran',
       onConfirm: () {
         Get.back();
-        Get.back();
+        Get.offAllNamed(Routes.HOME);
       },
       textConfirm: 'Kembali ke halaman utama',
     );

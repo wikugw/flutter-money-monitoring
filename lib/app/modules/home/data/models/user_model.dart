@@ -96,6 +96,10 @@ class Dates {
 
   Dates({this.date, this.records, this.totalInDay});
 
+  set Record(List<Records> records) {
+    records = records;
+  }
+
   Dates.fromJson(Map<String, dynamic> json) {
     date = json['date'];
     if (json['records'] != null) {
@@ -121,7 +125,7 @@ class Dates {
 class Records {
   String? spentName;
   String? spentType;
-  String? total;
+  int? total;
   String? attachment;
   String? createdAt;
   String? updatedAt;
