@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,6 +47,59 @@ class AddSpendingView extends GetView<AddSpendingController> {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: 'Total pengeluaran'),
+            ),
+            SizedBox(height: 5),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Text('Lampiran (Opsional)'),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton.icon(
+                        onPressed: () => controller.uploadFromGallery(),
+                        icon: Icon(Icons.attach_file),
+                        label: Text('Ambil dari galeri'),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton.icon(
+                        onPressed: () {},
+                        icon: Icon(Icons.photo_camera),
+                        label: Text('Ambil foto'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 5),
+            Align(
+              alignment: Alignment.center,
+              child: GetBuilder<AddSpendingController>(
+                builder: (c) => c.pickedImage != null
+                    ? Column(
+                        children: [
+                          Container(
+                            height: 200,
+                            width: 200,
+                            child: Image(
+                              image: FileImage(File(c.pickedImage!.path)),
+                            ),
+                          ),
+                          ElevatedButton(
+                              onPressed: () => controller.cancelAddAttachment(),
+                              child: Text('Batal'))
+                        ],
+                      )
+                    : SizedBox(),
+              ),
             ),
             SizedBox(height: 5),
             ElevatedButton(

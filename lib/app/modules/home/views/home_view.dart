@@ -17,7 +17,6 @@ class HomeView extends GetView<HomeController> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           var currentMonthRecord = snapshot.data;
-          print(currentMonthRecord?.dates?.length);
           return Scaffold(
             appBar: AppBar(
               title: Text('HomeView'),

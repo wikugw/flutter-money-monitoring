@@ -9,13 +9,15 @@ class HomeController extends GetxController {
   var currentMonthRecord = MoneyHistory().obs;
 
   Future<MoneyHistory> getCurrentMonthRecord(String loggedInEmail) async {
+    // generate firestore collection user
     CollectionReference users = firestore.collection('users');
 
+    // generate string dari date
     var dateNow = DateTime.now();
-
     String monthNumber = DateFormat.M().format(dateNow);
     String year = DateFormat.y().format(dateNow);
 
+    // get bulan sekarang
     final currentUser = await users.doc(loggedInEmail).get();
     final currentUserData = currentUser.data() as Map<String, dynamic>;
     final moneyHistoryRef = await users
@@ -25,6 +27,8 @@ class HomeController extends GetxController {
         .where('year', isEqualTo: year)
         .get();
 
+    // jika datanya ada (harusnya hanya 1) akan ditambahkan ke model MoneyHistory
+    // bulan ini
     List<MoneyHistory> moneyHistoryList = [];
     if (moneyHistoryRef.docs.length > 0) {
       moneyHistoryRef.docs.forEach((element) {
@@ -39,19 +43,25 @@ class HomeController extends GetxController {
       });
     }
 
+    // data user login dari FB akan dimasukkan ke model user
     user(UserModel.fromJson(currentUserData));
     user.refresh();
 
+    // update data perbulan ke model user
     user.update((val) {
       val!.moneyHistory = moneyHistoryList;
     });
 
     try {
+      // kalau value bulan ini tidak null
       if (user.value.moneyHistory != null) {
         for (var element in user.value.moneyHistory!) {
+          // jika month dan year sama dengan sekarang maka akan dimasukkan ke model
+          // currentmonthrecord (yang akan di return)
           if (element.month == monthNumber && element.year == year) {
             currentMonthRecord.value = element;
 
+            // ambil data perhari dari bulan sekarang
             QuerySnapshot currentMonthDateRecord = await users
                 .doc(loggedInEmail)
                 .collection('moneyHistory')
@@ -60,14 +70,16 @@ class HomeController extends GetxController {
                 .get();
 
             List<Dates> DatePerMonthHistoryList = [];
+
+            // jika ada hari (telah input pengeluaran pada hari itu)
             if (currentMonthDateRecord.docs.length > 0) {
+              // perulangan perhari
               for (var dayInMonthElement in currentMonthDateRecord.docs) {
-                print(dayInMonthElement.id);
                 int day = 0;
 
+                // ambil record pengeluaran perhari
                 var dateRecord =
                     dayInMonthElement.data() as Map<String, dynamic>;
-                print(dateRecord);
                 DatePerMonthHistoryList.add(
                   Dates(
                     date: dateRecord['date'],
@@ -75,6 +87,7 @@ class HomeController extends GetxController {
                   ),
                 );
 
+                // ambil record pengeluaran perhari
                 QuerySnapshot currentRecordPerDay = await users
                     .doc(loggedInEmail)
                     .collection('moneyHistory')
@@ -84,18 +97,13 @@ class HomeController extends GetxController {
                     .collection('records')
                     .get();
 
-                print('---- panjang item dibeli perhari');
-                print(currentRecordPerDay.docs.length);
-
                 List<Records> SpentItemPerDay = [];
+
+                // cek jika ada pengeluaran, masukkan data pengeluaran dari FB
+                // ke model records
                 if (currentRecordPerDay.docs.length > 0) {
-                  print('ngecek pembelian perhari');
                   for (var item in currentRecordPerDay.docs) {
-                    print(day);
-                    print('--record item perhari');
-                    print(DatePerMonthHistoryList[day].totalInDay);
                     var itemRecord = item.data() as Map<String, dynamic>;
-                    print(itemRecord);
                     SpentItemPerDay.add(Records(
                       spentName: itemRecord['spentName'],
                       spentType: itemRecord['spentType'],
@@ -105,9 +113,11 @@ class HomeController extends GetxController {
                       updatedAt: itemRecord['updatedAt'],
                     ));
                   }
-                  Dates haha = DatePerMonthHistoryList[day];
-                  haha.records = SpentItemPerDay;
-                  print(haha.records);
+
+                  // ambil hari yang sedang di loopig (dari hari/bulan)
+                  // tambahkan list model pengeluaran perhari ke hari tsb
+                  Dates perDay = DatePerMonthHistoryList[day];
+                  perDay.records = SpentItemPerDay;
                 }
                 day++;
               }
@@ -124,7 +134,5 @@ class HomeController extends GetxController {
       print(e);
       return currentMonthRecord.value;
     }
-
-    // return user.value;
   }
 }

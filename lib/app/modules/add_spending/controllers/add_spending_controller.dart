@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:money_monitoring/app/routes/app_pages.dart';
 
@@ -10,14 +14,31 @@ class AddSpendingController extends GetxController {
   var spentTypeC = "".obs;
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseStorage storage = FirebaseStorage.instance;
+
+  final ImagePicker imagePicker = ImagePicker();
+  XFile? pickedImage = null;
+
+  void uploadFromGallery() async {
+    try {
+      final XFile? checkImageData =
+          await imagePicker.pickImage(source: ImageSource.gallery);
+
+      if (checkImageData != null) {
+        pickedImage = checkImageData;
+        update();
+      }
+    } catch (e) {
+      Get.defaultDialog(title: 'Gagal unggah gambar', middleText: '$e');
+    }
+  }
+
+  void cancelAddAttachment() {
+    pickedImage = null;
+    update();
+  }
 
   Future<void> addSpending(params) async {
-    // print(spentTypeC);
-    // print(spentNameC.text);
-    // print(priceC.text);
-    // print(params['loggedInEmail']);
-    // print(params['currentMonthId']);
-
     DocumentReference userDocRef =
         await firestore.collection('users').doc(params['loggedInEmail']);
 
@@ -45,13 +66,28 @@ class AddSpendingController extends GetxController {
     }
 
     DocumentReference currentDayDoc = await dateDocRef.doc(UID);
-    // print(dateDocRef.get());
+
+    // upload gambar ke DB
+    String photoUrl = "";
+    if (pickedImage != null) {
+      try {
+        Reference storageRef = await storage.ref(
+            "${stringDateNow}-${params['loggedInEmail']}.${pickedImage!.name.split('.').last}");
+        File file = File(pickedImage!.path);
+
+        await storageRef.putFile(file);
+        photoUrl = await storageRef.getDownloadURL();
+        cancelAddAttachment();
+      } catch (e) {
+        print(e);
+      }
+    }
 
     // tambah record
     await currentDayDoc.collection('records').add({
       "spentName": spentNameC.text,
       "total": int.parse(priceC.text),
-      "attachment": "",
+      "attachment": photoUrl,
       "createdAt": stringDateNow,
       "updatedAt": stringDateNow,
       "spentType": spentTypeC.value,

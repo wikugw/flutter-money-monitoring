@@ -2,6 +2,7 @@
     package="com.wikugw.money_monitoring">
    <application
         android:label="money_monitoring"
+        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
