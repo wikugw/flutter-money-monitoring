@@ -52,42 +52,53 @@ class HomeView extends GetView<HomeController> {
                       'Tidak ada data',
                       style: TextStyle(fontSize: 20),
                     )
-                  : ListView.builder(
-                      itemCount: currentMonthRecord?.dates?.length,
-                      itemBuilder: (context, index) {
-                        var day = currentMonthRecord?.dates?[index];
-                        if (day!.records != null) {
-                          return ExpansionTile(
-                            title: Text('${day.totalInDay}'),
-                            subtitle: Text(
-                              DateFormat.yMMMMd().format(
-                                DateTime.parse(day.date!),
-                              ),
-                            ),
-                            children: List.generate(
-                              day.records!.length,
-                              (index) => ListTile(
-                                title: Text('${day.records![index].spentName}'),
-                                subtitle:
-                                    Text('Rp. ${day.records![index].total}'),
-                                trailing: IconButton(
-                                  onPressed: () => Get.toNamed(
-                                      Routes.EDIT_SPENDING,
-                                      arguments: {
-                                        "record": day.records![index],
-                                        "loggedInEmail": authC.user.value.email,
-                                        "currentMonthId":
-                                            currentMonthRecord!.id,
-                                      }),
-                                  icon: Icon(Icons.edit),
+                  : (currentMonthRecord?.dates?.length == null ||
+                          currentMonthRecord?.dates?.length == 0)
+                      ? Center(
+                          child:
+                              Text('belum ada catatan pengeluaran bulan ini'),
+                        )
+                      : ListView.builder(
+                          itemCount: currentMonthRecord?.dates?.length,
+                          itemBuilder: (context, index) {
+                            var day = currentMonthRecord?.dates?[index];
+                            if (day!.records != null) {
+                              return ExpansionTile(
+                                title: Text('${day.totalInDay}'),
+                                subtitle: Text(
+                                  DateFormat.yMMMMd().format(
+                                    DateTime.parse(day.date!),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return SizedBox();
-                        }
-                      }),
+                                children: List.generate(
+                                  day.records!.length,
+                                  (index) => ListTile(
+                                    title: Text(
+                                        '${day.records![index].spentName}'),
+                                    subtitle: Text(
+                                        'Rp. ${day.records![index].total}'),
+                                    trailing: IconButton(
+                                      onPressed: () {
+                                        // Get.delete<HomeController>();
+                                        Get.toNamed(Routes.EDIT_SPENDING,
+                                            arguments: {
+                                              "record": day.records![index],
+                                              "loggedInEmail":
+                                                  authC.user.value.email,
+                                              "currentMonthId":
+                                                  currentMonthRecord!.id,
+                                              "currentDateId": day.id,
+                                            });
+                                      },
+                                      icon: Icon(Icons.edit),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return SizedBox();
+                            }
+                          }),
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () => Get.toNamed(Routes.ADD_SPENDING, arguments: {

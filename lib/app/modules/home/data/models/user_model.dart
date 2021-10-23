@@ -90,11 +90,12 @@ class MoneyHistory {
 }
 
 class Dates {
+  String? id;
   String? date;
   List<Records>? records;
   int? totalInDay;
 
-  Dates({this.date, this.records, this.totalInDay});
+  Dates({this.id, this.date, this.records, this.totalInDay});
 
   set Record(List<Records> records) {
     records = records;
@@ -123,6 +124,7 @@ class Dates {
 }
 
 class Records {
+  String? id;
   String? spentName;
   String? spentType;
   int? total;
@@ -131,7 +133,8 @@ class Records {
   String? updatedAt;
 
   Records(
-      {this.spentName,
+      {this.id,
+      this.spentName,
       this.spentType,
       this.total,
       this.attachment,

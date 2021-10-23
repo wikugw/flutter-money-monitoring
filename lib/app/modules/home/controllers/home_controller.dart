@@ -81,6 +81,7 @@ class HomeController extends GetxController {
                     dayInMonthElement.data() as Map<String, dynamic>;
                 DatePerMonthHistoryList.add(
                   Dates(
+                    id: dateRecord['id'],
                     date: dateRecord['date'],
                     totalInDay: dateRecord['totalInDay'],
                   ),
@@ -104,6 +105,7 @@ class HomeController extends GetxController {
                   for (var item in currentRecordPerDay.docs) {
                     var itemRecord = item.data() as Map<String, dynamic>;
                     SpentItemPerDay.add(Records(
+                      id: itemRecord['id'],
                       spentName: itemRecord['spentName'],
                       spentType: itemRecord['spentType'],
                       total: itemRecord['total'],

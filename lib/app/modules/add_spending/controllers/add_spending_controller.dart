@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:money_monitoring/app/routes/app_pages.dart';
+import 'package:random_string/random_string.dart';
 
 class AddSpendingController extends GetxController {
   late TextEditingController spentNameC;
@@ -75,8 +76,12 @@ class AddSpendingController extends GetxController {
 
     // tambah data hari ini ke DB
     if (todayDocRecord.docs.length == 0) {
-      await dateDocRef.doc(UID).set(
-          {"date": stringDateNow, "totalInDay": 0, "dateNumber": dateNumber});
+      await dateDocRef.doc(UID).set({
+        "id": UID,
+        "date": stringDateNow,
+        "totalInDay": 0,
+        "dateNumber": dateNumber
+      });
     }
 
     DocumentReference currentDayDoc = await dateDocRef.doc(UID);
@@ -86,7 +91,7 @@ class AddSpendingController extends GetxController {
     if (pickedImage != null) {
       try {
         Reference storageRef = await storage.ref(
-            "${stringDateNow}-${params['loggedInEmail']}.${pickedImage!.name.split('.').last}");
+            "${params['loggedInEmail']}/${params['currentMonthId']}/${UID}/${stringDateNow}-${params['loggedInEmail']}.${pickedImage!.name.split('.').last}");
         File file = File(pickedImage!.path);
 
         await storageRef.putFile(file);
@@ -97,8 +102,11 @@ class AddSpendingController extends GetxController {
       }
     }
 
+    String recordId = UID + '-' + randomAlphaNumeric(10);
+
     // tambah record
-    await currentDayDoc.collection('records').add({
+    await currentDayDoc.collection('records').doc(recordId).set({
+      "id": recordId,
       "spentName": spentNameC.text,
       "total": int.parse(priceC.text),
       "attachment": photoUrl,

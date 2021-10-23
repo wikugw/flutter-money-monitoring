@@ -13,8 +13,8 @@ class EditSpendingView extends GetView<EditSpendingController> {
   @override
   Widget build(BuildContext context) {
     Records record = Get.arguments['record'];
-    String loggedInEmail = Get.arguments['loggedInEmail'];
-    String currentMonthId = Get.arguments['currentMonthId'];
+    // String loggedInEmail = Get.arguments['loggedInEmail'];
+    // String currentMonthId = Get.arguments['currentMonthId'];
 
     controller.spentNameC.text = record.spentName!;
     controller.spentTypeC.value = record.spentType!;
@@ -131,7 +131,7 @@ class EditSpendingView extends GetView<EditSpendingController> {
             ),
             SizedBox(height: 5),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () => controller.updateSpending(Get.parameters),
               child: Text('Update'),
             )
           ],
