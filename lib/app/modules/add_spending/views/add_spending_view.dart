@@ -12,6 +12,7 @@ class AddSpendingView extends GetView<AddSpendingController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('AddSpendingView'),
         centerTitle: true,

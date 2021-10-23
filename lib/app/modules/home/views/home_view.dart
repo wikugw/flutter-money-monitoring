@@ -21,6 +21,30 @@ class HomeView extends GetView<HomeController> {
             appBar: AppBar(
               title: Text('HomeView'),
               centerTitle: true,
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      Get.bottomSheet(
+                        Container(
+                          child: Wrap(
+                            children: [
+                              ListTile(
+                                leading: Icon(Icons.person),
+                                title: Text('Profile'),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.logout),
+                                title: Text('Keluar'),
+                                onTap: () => authC.logout(),
+                              ),
+                            ],
+                          ),
+                        ),
+                        backgroundColor: Colors.white,
+                      );
+                    },
+                    icon: Icon(Icons.menu))
+              ],
             ),
             body: Center(
               child: (currentMonthRecord?.dates == null)

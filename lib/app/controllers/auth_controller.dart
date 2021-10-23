@@ -19,6 +19,20 @@ class AuthController extends GetxController {
 
   var user = UserModel().obs;
 
+  Future<void> logout() async {
+    Get.defaultDialog(
+      title: 'Konfirmasi keluar',
+      middleText: 'Yakin keluar dari akun ini?',
+      onConfirm: () async {
+        await googleSignIn.disconnect();
+        await googleSignIn.signOut();
+        Get.offAllNamed(Routes.LOGIN);
+      },
+      textConfirm: 'Ya',
+      textCancel: 'Batal',
+    );
+  }
+
   Future<bool> autoLogin() async {
     // await googleSignIn.disconnect();
     // await googleSignIn.signOut();
