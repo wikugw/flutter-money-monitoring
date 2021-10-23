@@ -32,22 +32,26 @@ class HomeView extends GetView<HomeController> {
                       itemCount: currentMonthRecord?.dates?.length,
                       itemBuilder: (context, index) {
                         var day = currentMonthRecord?.dates?[index];
-                        return ExpansionTile(
-                          title: Text('${day!.totalInDay}'),
-                          subtitle: Text(
-                            DateFormat.yMMMMd().format(
-                              DateTime.parse(day.date!),
+                        if (day!.records != null) {
+                          return ExpansionTile(
+                            title: Text('${day.totalInDay}'),
+                            subtitle: Text(
+                              DateFormat.yMMMMd().format(
+                                DateTime.parse(day.date!),
+                              ),
                             ),
-                          ),
-                          children: List.generate(
-                            day.records!.length,
-                            (index) => ListTile(
-                              title: Text('${day.records![index].spentName}'),
-                              subtitle:
-                                  Text('Rp. ${day.records![index].total}'),
+                            children: List.generate(
+                              day.records!.length,
+                              (index) => ListTile(
+                                title: Text('${day.records![index].spentName}'),
+                                subtitle:
+                                    Text('Rp. ${day.records![index].total}'),
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        } else {
+                          return SizedBox();
+                        }
                       }),
             ),
             floatingActionButton: FloatingActionButton(

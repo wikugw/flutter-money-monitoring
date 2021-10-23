@@ -70,7 +70,7 @@ class AddSpendingView extends GetView<AddSpendingController> {
                     Expanded(
                       flex: 1,
                       child: ElevatedButton.icon(
-                        onPressed: () {},
+                        onPressed: () => controller.uploadFromCamera(),
                         icon: Icon(Icons.photo_camera),
                         label: Text('Ambil foto'),
                       ),

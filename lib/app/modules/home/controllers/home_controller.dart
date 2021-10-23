@@ -74,9 +74,8 @@ class HomeController extends GetxController {
             // jika ada hari (telah input pengeluaran pada hari itu)
             if (currentMonthDateRecord.docs.length > 0) {
               // perulangan perhari
+              int day = 0;
               for (var dayInMonthElement in currentMonthDateRecord.docs) {
-                int day = 0;
-
                 // ambil record pengeluaran perhari
                 var dateRecord =
                     dayInMonthElement.data() as Map<String, dynamic>;
@@ -119,7 +118,7 @@ class HomeController extends GetxController {
                   Dates perDay = DatePerMonthHistoryList[day];
                   perDay.records = SpentItemPerDay;
                 }
-                day++;
+                day = day + 1;
               }
             }
 

@@ -19,6 +19,20 @@ class AddSpendingController extends GetxController {
   final ImagePicker imagePicker = ImagePicker();
   XFile? pickedImage = null;
 
+  void uploadFromCamera() async {
+    try {
+      final XFile? checkImageData =
+          await imagePicker.pickImage(source: ImageSource.camera);
+
+      if (checkImageData != null) {
+        pickedImage = checkImageData;
+        update();
+      }
+    } catch (e) {
+      Get.defaultDialog(title: 'Gagal ambil gambar', middleText: '$e');
+    }
+  }
+
   void uploadFromGallery() async {
     try {
       final XFile? checkImageData =
