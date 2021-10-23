@@ -5,16 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
 
-import '../controllers/add_spending_controller.dart';
+import '../controllers/edit_spending_controller.dart';
 
-class AddSpendingView extends GetView<AddSpendingController> {
+class EditSpendingView extends GetView<EditSpendingController> {
   @override
   Widget build(BuildContext context) {
+    Records record = Get.arguments['record'];
+    String loggedInEmail = Get.arguments['loggedInEmail'];
+    String currentMonthId = Get.arguments['currentMonthId'];
+
+    controller.spentNameC.text = record.spentName!;
+    controller.spentTypeC.value = record.spentType!;
+    controller.priceC.text = record.total.toString();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('AddSpendingView'),
+        title: Text('EditSpendingView'),
         centerTitle: true,
       ),
       body: Padding(
@@ -86,31 +94,45 @@ class AddSpendingView extends GetView<AddSpendingController> {
               ],
             ),
             SizedBox(height: 5),
-            Align(
-              alignment: Alignment.center,
-              child: GetBuilder<AddSpendingController>(
-                builder: (c) => c.pickedImage != null
-                    ? Column(
-                        children: [
-                          Container(
+            Obx(
+              () => controller.isImageChanged.isFalse
+                  ? record.attachment == ""
+                      ? SizedBox()
+                      : Align(
+                          child: Container(
                             height: 200,
                             width: 200,
-                            child: Image(
-                              image: FileImage(File(c.pickedImage!.path)),
-                            ),
+                            child: Image.network(record.attachment!),
                           ),
-                          ElevatedButton(
-                              onPressed: () => controller.cancelAddAttachment(),
-                              child: Text('Batal'))
-                        ],
-                      )
-                    : SizedBox(),
-              ),
+                        )
+                  : Align(
+                      alignment: Alignment.center,
+                      child: GetBuilder<EditSpendingController>(
+                        builder: (c) => c.pickedImage != null
+                            ? Column(
+                                children: [
+                                  Container(
+                                    height: 200,
+                                    width: 200,
+                                    child: Image(
+                                      image:
+                                          FileImage(File(c.pickedImage!.path)),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                      onPressed: () =>
+                                          controller.cancelAddAttachment(),
+                                      child: Text('Batal'))
+                                ],
+                              )
+                            : SizedBox(),
+                      ),
+                    ),
             ),
             SizedBox(height: 5),
             ElevatedButton(
-              onPressed: () => controller.addSpending(Get.arguments),
-              child: Text('Tambah'),
+              onPressed: () {},
+              child: Text('Update'),
             )
           ],
         ),

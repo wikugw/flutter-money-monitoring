@@ -70,6 +70,17 @@ class HomeView extends GetView<HomeController> {
                                 title: Text('${day.records![index].spentName}'),
                                 subtitle:
                                     Text('Rp. ${day.records![index].total}'),
+                                trailing: IconButton(
+                                  onPressed: () => Get.toNamed(
+                                      Routes.EDIT_SPENDING,
+                                      arguments: {
+                                        "record": day.records![index],
+                                        "loggedInEmail": authC.user.value.email,
+                                        "currentMonthId":
+                                            currentMonthRecord!.id,
+                                      }),
+                                  icon: Icon(Icons.edit),
+                                ),
                               ),
                             ),
                           );
