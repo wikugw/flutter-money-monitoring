@@ -25,5 +25,7 @@ dev_dependencies:
     sdk: flutter
 
 flutter: 
+  assets: 
+    - assets/logo/
   uses-material-design: true
 

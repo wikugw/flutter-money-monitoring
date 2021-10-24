@@ -15,13 +15,50 @@ class LoginView extends GetView<LoginController> {
         centerTitle: true,
       ),
       body: Center(
-        child: Text(
-          'LoginView is working',
-          style: TextStyle(fontSize: 20),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.white,
+              textStyle: TextStyle(color: Colors.black),
+            ),
+            onPressed: () => authC.gmailLogin(),
+            child: Container(
+              height: 50,
+              padding: EdgeInsets.all(5),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Image.asset(
+                          'assets/logo/google.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Center(
+                      child: Text(
+                        'Login dengan akun google',
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
-      floatingActionButton:
-          FloatingActionButton(onPressed: () => authC.gmailLogin()),
     );
   }
 }

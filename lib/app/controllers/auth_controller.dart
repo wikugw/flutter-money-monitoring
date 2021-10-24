@@ -1,5 +1,6 @@
 // firebase
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -29,6 +30,7 @@ class AuthController extends GetxController {
         Get.offAllNamed(Routes.LOGIN);
       },
       textConfirm: 'Ya',
+      confirmTextColor: Colors.white,
       textCancel: 'Batal',
     );
   }
@@ -42,7 +44,7 @@ class AuthController extends GetxController {
       // Add user to firestore
       CollectionReference users = firestore.collection('users');
 
-      final currentUser = await users.doc(loggedInUser!.email).get();
+      final currentUser = await users.doc(loggedInUser?.email).get();
       final currentUserData = currentUser.data() as Map<String, dynamic>;
 
       user(UserModel.fromJson(currentUserData));
@@ -98,47 +100,49 @@ class AuthController extends GetxController {
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth =
-          await loggedInUser!.authentication;
+          await loggedInUser?.authentication;
 
-      // Create a new credential
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth!.accessToken,
-        idToken: googleAuth.idToken,
-      );
+      if (googleAuth != null) {
+        // Create a new credential
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
 
-      // Add user to firestore
-      CollectionReference users = firestore.collection('users');
+        // Add user to firestore
+        CollectionReference users = firestore.collection('users');
 
-      print(loggedInUser);
-      await auth.signInWithCredential(credential);
-      final checkUser = await users.doc(loggedInUser!.email).get();
+        print(loggedInUser);
+        await auth.signInWithCredential(credential);
+        final checkUser = await users.doc(loggedInUser!.email).get();
 
-      if (checkUser.data() != null) {
-        await users.doc(loggedInUser!.email).update({
-          "updatedAt": dateNow,
-        });
-      } else {
-        await users.doc(loggedInUser!.email).set({
-          "name": loggedInUser!.displayName,
-          "email": loggedInUser!.email,
-          "photoUrl": loggedInUser!.photoUrl,
-          "createdAt": dateNow,
-          "updatedAt": dateNow,
-          "totalEntireSpent": 0,
-        });
+        if (checkUser.data() != null) {
+          await users.doc(loggedInUser!.email).update({
+            "updatedAt": dateNow,
+          });
+        } else {
+          await users.doc(loggedInUser!.email).set({
+            "name": loggedInUser!.displayName,
+            "email": loggedInUser!.email,
+            "photoUrl": loggedInUser!.photoUrl,
+            "createdAt": dateNow,
+            "updatedAt": dateNow,
+            "totalEntireSpent": 0,
+          });
+        }
+
+        final currentUser = await users.doc(loggedInUser!.email).get();
+        final currentUserData = currentUser.data() as Map<String, dynamic>;
+
+        user(UserModel.fromJson(currentUserData));
+        user.refresh();
+        print(user);
+
+        // check bulan ini apa sudah tersimpan di DB
+        checkOrCreateMonthRecord();
+
+        Get.offAllNamed(Routes.HOME);
       }
-
-      final currentUser = await users.doc(loggedInUser!.email).get();
-      final currentUserData = currentUser.data() as Map<String, dynamic>;
-
-      user(UserModel.fromJson(currentUserData));
-      user.refresh();
-      print(user);
-
-      // check bulan ini apa sudah tersimpan di DB
-      checkOrCreateMonthRecord();
-
-      Get.offAllNamed(Routes.HOME);
     } catch (e) {
       print(e);
       Get.defaultDialog(title: 'Login Error', middleText: '$e');

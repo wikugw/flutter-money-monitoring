@@ -101,8 +101,7 @@ class HomeView extends GetView<HomeController> {
                                                       "loggedInEmail": authC
                                                           .user.value.email,
                                                       "currentMonthId":
-                                                          currentMonthRecord!
-                                                              .id,
+                                                          currentMonthRecord.id,
                                                       "currentDateId": day.id,
                                                     });
                                               },

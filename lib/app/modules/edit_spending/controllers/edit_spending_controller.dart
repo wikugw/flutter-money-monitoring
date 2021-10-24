@@ -137,6 +137,7 @@ class EditSpendingController extends GetxController {
         Get.back();
       },
       textConfirm: 'OK',
+      confirmTextColor: Colors.white,
     );
   }
 
@@ -151,6 +152,7 @@ class EditSpendingController extends GetxController {
         title: 'Konfirmasi Hapus Pengeluaran',
         middleText: 'Yakin ingin hapus pengeluaran?',
         textConfirm: 'Hapus',
+        confirmTextColor: Colors.white,
         textCancel: 'Batal',
         onConfirm: () async {
           DocumentReference userDoc =
@@ -199,6 +201,7 @@ class EditSpendingController extends GetxController {
             middleText: 'Berhasil hapus pengeluaran',
             onConfirm: () => Get.back(),
             textConfirm: 'OK',
+            confirmTextColor: Colors.white,
           );
         });
   }

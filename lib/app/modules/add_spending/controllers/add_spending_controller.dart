@@ -148,6 +148,7 @@ class AddSpendingController extends GetxController {
         Get.offAllNamed(Routes.HOME);
       },
       textConfirm: 'Kembali ke halaman utama',
+      confirmTextColor: Colors.white,
     );
     // return ke home
   }
