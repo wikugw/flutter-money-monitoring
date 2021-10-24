@@ -60,12 +60,49 @@ class HomeView extends GetView<HomeController> {
                           )
                         : ListView(
                             children: [
+                              Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Halo, ${controller.user.value.name}!',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.grey[800],
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        'Pengeluaranmu bulan ini sebesar',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[800],
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Rp. ${controller.user.value.totalEntireSpent}',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.grey[800],
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 10),
                                 child: Center(
                                   child: Text(
-                                      'Pengeluaran bulan ${currentMonthRecord!.monthName}'),
+                                      'Rincian Pengeluaran bulan ${currentMonthRecord!.monthName}'),
                                 ),
                               ),
                               ListView.builder(
@@ -117,6 +154,7 @@ class HomeView extends GetView<HomeController> {
                             ],
                           )),
             floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
               onPressed: () => Get.toNamed(Routes.ADD_SPENDING, arguments: {
                 "loggedInEmail": authC.user.value.email,
                 "currentMonthId": currentMonthRecord!.id,
