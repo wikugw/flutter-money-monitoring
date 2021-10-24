@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,7 @@ class EditSpendingController extends GetxController {
   XFile? pickedImage = null;
 
   FirebaseStorage storage = FirebaseStorage.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void uploadFromCamera() async {
     try {
@@ -54,6 +56,7 @@ class EditSpendingController extends GetxController {
 
   Future<void> updateSpending(params) async {
     Records record = Get.arguments['record'];
+    String recordId = record.id!;
     String loggedInEmail = Get.arguments['loggedInEmail'];
     String currentMonthId = Get.arguments['currentMonthId'];
     String currentDateId = Get.arguments['currentDateId'];
@@ -62,6 +65,7 @@ class EditSpendingController extends GetxController {
     String stringDateNow = dateNow.toIso8601String();
 
     String photoUrl = record.attachment!;
+    String oldPhoto = photoUrl;
     if (pickedImage != null) {
       try {
         Reference storageRef = await storage.ref(
@@ -71,14 +75,58 @@ class EditSpendingController extends GetxController {
         await storageRef.putFile(file);
         photoUrl = await storageRef.getDownloadURL();
         // delete gambar
+        FirebaseStorage.instance.refFromURL(oldPhoto).delete();
       } catch (e) {
         print(e);
       }
     }
-    print(photoUrl);
-    // cancelAddAttachment();
+
+    int oldTotal = record.total!;
+
+    DocumentReference userDoc =
+        await firestore.collection('users').doc(loggedInEmail);
+    DocumentReference monthDoc =
+        await userDoc.collection('moneyHistory').doc(currentMonthId);
+    DocumentReference dateDoc =
+        await monthDoc.collection('dates').doc(currentDateId);
+    DocumentReference recordDoc =
+        await dateDoc.collection('records').doc(recordId);
+
+    if (oldTotal != int.parse(priceC.text)) {
+      int spentInDay = 0;
+      // mendapatkan total pengeluaran perhari
+      await dateDoc.get().then((value) => spentInDay = value['totalInDay']);
+
+      // mengurangi pengeluaran perhari dengan pengeluaran lama, kemudian ditambah dengan yang baru
+      await dateDoc.update(
+          {"totalInDay": (spentInDay - oldTotal) + int.parse(priceC.text)});
+
+      // tambah pengeluaran perbulan
+      int spentInMonth = 0;
+      await monthDoc
+          .get()
+          .then((value) => spentInMonth = value['totalInMonth']);
+      await monthDoc.update(
+          {"totalInMonth": (spentInMonth - oldTotal) + int.parse(priceC.text)});
+
+      // tambah pengeluaran peruser
+      int userSpent = 0;
+      await userDoc
+          .get()
+          .then((value) => userSpent = value['totalEntireSpent']);
+      await userDoc.update({
+        "totalEntireSpent": (userSpent - oldTotal) + int.parse(priceC.text)
+      });
+    }
 
     // update ke DB
+    var currRecord = await recordDoc.update({
+      "spentName": spentNameC.text,
+      "total": int.parse(priceC.text),
+      "attachment": photoUrl,
+      "updatedAt": stringDateNow,
+      "spentType": spentTypeC.value,
+    });
     // coba akses controller home, update data
   }
 
