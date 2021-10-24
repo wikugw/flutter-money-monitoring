@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
+import 'package:money_monitoring/app/routes/app_pages.dart';
 
 import '../controllers/edit_spending_controller.dart';
 
@@ -24,6 +25,10 @@ class EditSpendingView extends GetView<EditSpendingController> {
       appBar: AppBar(
         title: Text('EditSpendingView'),
         centerTitle: true,
+        leading: new IconButton(
+          icon: new Icon(Icons.arrow_back),
+          onPressed: () => Get.offAllNamed(Routes.HOME),
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(20),

@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:money_monitoring/app/modules/home/controllers/home_controller.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
 
 class EditSpendingController extends GetxController {
@@ -120,14 +121,23 @@ class EditSpendingController extends GetxController {
     }
 
     // update ke DB
-    var currRecord = await recordDoc.update({
+    await recordDoc.update({
       "spentName": spentNameC.text,
       "total": int.parse(priceC.text),
       "attachment": photoUrl,
       "updatedAt": stringDateNow,
       "spentType": spentTypeC.value,
     });
-    // coba akses controller home, update data
+
+    // dialog berhasil
+    Get.defaultDialog(
+      title: 'Berhasil',
+      middleText: 'Berhasil memperbarui pengeluaran',
+      onConfirm: () {
+        Get.back();
+      },
+      textConfirm: 'OK',
+    );
   }
 
   @override
