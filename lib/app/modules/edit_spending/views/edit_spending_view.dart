@@ -32,7 +32,7 @@ class EditSpendingView extends GetView<EditSpendingController> {
       ),
       body: Padding(
         padding: EdgeInsets.all(20),
-        child: Column(
+        child: ListView(
           children: [
             TextField(
               controller: controller.spentNameC,
@@ -136,9 +136,15 @@ class EditSpendingView extends GetView<EditSpendingController> {
             ),
             SizedBox(height: 5),
             ElevatedButton(
-              onPressed: () => controller.updateSpending(Get.parameters),
+              onPressed: () => controller.updateSpending(Get.arguments),
               child: Text('Update'),
-            )
+            ),
+            SizedBox(height: 5),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(primary: Colors.red),
+              onPressed: () => controller.deleteRecord(Get.arguments),
+              child: Text('Hapus'),
+            ),
           ],
         ),
       ),

@@ -5,8 +5,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:money_monitoring/app/modules/home/controllers/home_controller.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
+import 'package:money_monitoring/app/routes/app_pages.dart';
 
 class EditSpendingController extends GetxController {
   late TextEditingController spentNameC;
@@ -76,7 +76,7 @@ class EditSpendingController extends GetxController {
         await storageRef.putFile(file);
         photoUrl = await storageRef.getDownloadURL();
         // delete gambar
-        FirebaseStorage.instance.refFromURL(oldPhoto).delete();
+        await FirebaseStorage.instance.refFromURL(oldPhoto).delete();
       } catch (e) {
         print(e);
       }
@@ -138,6 +138,69 @@ class EditSpendingController extends GetxController {
       },
       textConfirm: 'OK',
     );
+  }
+
+  Future<void> deleteRecord(var params) async {
+    Records record = params['record'];
+    String recordId = record.id!;
+    String loggedInEmail = params['loggedInEmail'];
+    String currentMonthId = params['currentMonthId'];
+    String currentDateId = params['currentDateId'];
+
+    Get.defaultDialog(
+        title: 'Konfirmasi Hapus Pengeluaran',
+        middleText: 'Yakin ingin hapus pengeluaran?',
+        textConfirm: 'Hapus',
+        textCancel: 'Batal',
+        onConfirm: () async {
+          DocumentReference userDoc =
+              await firestore.collection('users').doc(loggedInEmail);
+          DocumentReference monthDoc =
+              await userDoc.collection('moneyHistory').doc(currentMonthId);
+          DocumentReference dateDoc =
+              await monthDoc.collection('dates').doc(currentDateId);
+          DocumentReference recordDoc =
+              await dateDoc.collection('records').doc(recordId);
+
+          // mengurangi pengeluaran total dengan pengeluaran yang dihapus di DB
+          int spentInDay = 0;
+          await dateDoc.get().then((value) => spentInDay = value['totalInDay']);
+          await dateDoc
+              .update({"totalInDay": spentInDay - int.parse(priceC.text)});
+
+          int spentInMonth = 0;
+          await monthDoc
+              .get()
+              .then((value) => spentInMonth = value['totalInMonth']);
+          await monthDoc
+              .update({"totalInMonth": spentInMonth - int.parse(priceC.text)});
+
+          int userSpent = 0;
+          await userDoc
+              .get()
+              .then((value) => userSpent = value['totalEntireSpent']);
+          await userDoc
+              .update({"totalEntireSpent": userSpent - int.parse(priceC.text)});
+
+          String imageUrl = "";
+          await recordDoc.get().then((value) => imageUrl = value['attachment']);
+
+          if (imageUrl != "") {
+            await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+          }
+
+          await recordDoc.delete();
+
+          Get.back();
+          Get.offAllNamed(Routes.HOME);
+
+          Get.defaultDialog(
+            title: 'Berhasil hapus',
+            middleText: 'Berhasil hapus pengeluaran',
+            onConfirm: () => Get.back(),
+            textConfirm: 'OK',
+          );
+        });
   }
 
   @override
