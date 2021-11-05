@@ -86,7 +86,7 @@ class HomeView extends GetView<HomeController> {
                                       ),
                                       SizedBox(height: 5),
                                       Text(
-                                        'Rp. ${controller.user.value.totalEntireSpent}',
+                                        'Rp. ${currentMonthRecord?.totalInMonth}',
                                         style: TextStyle(
                                           fontSize: 20,
                                           color: Colors.grey[800],
