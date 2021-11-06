@@ -7,6 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
 import 'package:money_monitoring/app/routes/app_pages.dart';
+import 'package:money_monitoring/app/utils/drop_down_style.dart';
+import 'package:money_monitoring/app/utils/text_field.dart';
+import 'package:money_monitoring/app/utils/button_style.dart';
 
 import '../controllers/edit_spending_controller.dart';
 
@@ -14,137 +17,247 @@ class EditSpendingView extends GetView<EditSpendingController> {
   @override
   Widget build(BuildContext context) {
     Records record = Get.arguments['record'];
-    // String loggedInEmail = Get.arguments['loggedInEmail'];
-    // String currentMonthId = Get.arguments['currentMonthId'];
 
     controller.spentNameC.text = record.spentName!;
     controller.spentTypeC.value = record.spentType!;
     controller.priceC.text = record.total.toString();
     return Scaffold(
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('EditSpendingView'),
-        centerTitle: true,
+        title: Text(
+          'Rubah Pengeluaran',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        centerTitle: false,
         leading: new IconButton(
           icon: new Icon(Icons.arrow_back),
+          color: Colors.black,
           onPressed: () => Get.offAllNamed(Routes.HOME),
         ),
+        leadingWidth: 25,
+        elevation: 0,
+        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: EdgeInsets.all(20),
-        child: ListView(
+        child: Stack(
           children: [
-            TextField(
-              controller: controller.spentNameC,
-              decoration: InputDecoration(labelText: 'Nama pengeluaran'),
-            ),
-            SizedBox(height: 25),
-            DropdownSearch<String>(
-              mode: Mode.BOTTOM_SHEET,
-              items: [
-                "Rumah tangga",
-                "Makanan/Minuman",
-                "Transportasi",
-                "Belanja",
-                "Pendidikan",
-                "Kesehatan",
-                "Perawatan",
-                "Investasi",
-                'Lain - lain'
-              ],
-              label: "Jenis Pengeluaran",
-              onChanged: (String? value) {
-                if (value != null) {
-                  controller.spentTypeC.value = value;
-                }
-              },
-              selectedItem: controller.spentTypeC.value,
-            ),
-            SizedBox(height: 5),
-            TextField(
-              controller: controller.priceC,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Total pengeluaran'),
-            ),
-            SizedBox(height: 5),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            ListView(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Text('Lampiran (Opsional)'),
+                TextField(
+                  controller: controller.spentNameC,
+                  decoration: TextFieldStyle.getTextFieldStyle(
+                    'Nama Pengeluaran',
+                    Icons.shopping_bag_rounded,
+                  ),
                 ),
-                Row(
+                SizedBox(height: 15),
+                DropdownSearch<String>(
+                  mode: Mode.BOTTOM_SHEET,
+                  items: [
+                    "Rumah tangga",
+                    "Makanan/Minuman",
+                    "Transportasi",
+                    "Belanja",
+                    "Pendidikan",
+                    "Kesehatan",
+                    "Perawatan",
+                    "Investasi",
+                    'Lain - lain'
+                  ],
+                  dropdownSearchDecoration:
+                      DropDownSearchStyle.getDropDownSearchStyle(
+                    'Jenis pengeluaran',
+                  ),
+                  onChanged: (String? value) {
+                    if (value != null) {
+                      controller.spentTypeC.value = value;
+                    }
+                  },
+                  selectedItem: controller.spentTypeC.value,
+                ),
+                SizedBox(height: 15),
+                TextField(
+                  controller: controller.priceC,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  keyboardType: TextInputType.number,
+                  decoration: TextFieldStyle.getTextFieldStyle(
+                    'Total pengeluaran',
+                    Icons.money,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      flex: 1,
-                      child: ElevatedButton.icon(
-                        onPressed: () => controller.uploadFromGallery(),
-                        icon: Icon(Icons.attach_file),
-                        label: Text('Ambil dari galeri'),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      flex: 1,
-                      child: ElevatedButton.icon(
-                        onPressed: () => controller.uploadFromCamera(),
-                        icon: Icon(Icons.photo_camera),
-                        label: Text('Ambil foto'),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: Text(
+                        'Lampiran (Opsional)',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ],
                 ),
+                Container(
+                  width: Get.width,
+                  height: 280,
+                  child: Stack(
+                    children: [
+                      Obx(
+                        () => controller.isImageChanged.isFalse
+                            ? record.attachment == ""
+                                ? SizedBox()
+                                : Align(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(60),
+                                      child: Container(
+                                        padding: EdgeInsets.zero,
+                                        height: 230,
+                                        width: 230,
+                                        child:
+                                            Image.network(record.attachment!),
+                                      ),
+                                    ),
+                                  )
+                            : Align(
+                                alignment: Alignment.center,
+                                child: GetBuilder<EditSpendingController>(
+                                  builder: (c) => c.pickedImage != null
+                                      ? Container(
+                                          height: 230,
+                                          width: 230,
+                                          child: Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(60),
+                                                child: Container(
+                                                  height: 230,
+                                                  width: 230,
+                                                  color: Colors.amber,
+                                                  child: Image(
+                                                    image: FileImage(File(
+                                                        c.pickedImage!.path)),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.topRight,
+                                                child: Material(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  elevation: 2,
+                                                  child: CircleAvatar(
+                                                    radius: 20,
+                                                    backgroundColor: Colors.red,
+                                                    child: IconButton(
+                                                      icon: Icon(
+                                                        Icons.close,
+                                                        color: Colors.white,
+                                                      ),
+                                                      onPressed: () => controller
+                                                          .cancelAddAttachment(),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : SizedBox(),
+                                ),
+                              ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: () => controller.uploadFromGallery(),
+                              icon: Icon(Icons.attach_file),
+                              label: Text('Galeri'),
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xff0071FF),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.only(
+                                    topLeft: Radius.circular(30),
+                                    bottomLeft: Radius.circular(30),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () => controller.uploadFromCamera(),
+                              icon: Icon(Icons.photo_camera),
+                              label: Text('Foto'),
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xffF60470),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.only(
+                                    topRight: Radius.circular(30),
+                                    bottomRight: Radius.circular(30),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ],
             ),
-            SizedBox(height: 5),
-            Obx(
-              () => controller.isImageChanged.isFalse
-                  ? record.attachment == ""
-                      ? SizedBox()
-                      : Align(
-                          child: Container(
-                            height: 200,
-                            width: 200,
-                            child: Image.network(record.attachment!),
-                          ),
-                        )
-                  : Align(
-                      alignment: Alignment.center,
-                      child: GetBuilder<EditSpendingController>(
-                        builder: (c) => c.pickedImage != null
-                            ? Column(
-                                children: [
-                                  Container(
-                                    height: 200,
-                                    width: 200,
-                                    child: Image(
-                                      image:
-                                          FileImage(File(c.pickedImage!.path)),
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                      onPressed: () =>
-                                          controller.cancelAddAttachment(),
-                                      child: Text('Batal'))
-                                ],
-                              )
-                            : SizedBox(),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: Get.width,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        child: ElevatedButton(
+                          onPressed: () =>
+                              controller.updateSpending(Get.arguments),
+                          child: Text('Update'),
+                          style: buttonStyle.getButtonStyle(),
+                        ),
                       ),
                     ),
-            ),
-            SizedBox(height: 5),
-            ElevatedButton(
-              onPressed: () => controller.updateSpending(Get.arguments),
-              child: Text('Update'),
-            ),
-            SizedBox(height: 5),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: Colors.red),
-              onPressed: () => controller.deleteRecord(Get.arguments),
-              child: Text('Hapus'),
-            ),
+                    SizedBox(width: 5),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: ElevatedButton(
+                          onPressed: () =>
+                              controller.deleteRecord(Get.arguments),
+                          child: Icon(Icons.delete),
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.red,
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(60.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
