@@ -1,8 +1,10 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:money_monitoring/app/controllers/auth_controller.dart';
+import 'package:money_monitoring/app/modules/home/data/models/pie_chart_model.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
 import 'package:money_monitoring/app/routes/app_pages.dart';
 import 'package:money_monitoring/app/utils/number_format.dart';
@@ -94,6 +96,76 @@ class HomeView extends GetView<HomeController> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height: 200,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: PieChart(
+                                          PieChartData(
+                                            borderData:
+                                                FlBorderData(show: false),
+                                            sectionsSpace: 0,
+                                            centerSpaceRadius: 40,
+                                            sections: controller.spendTypeAll
+                                                .asMap()
+                                                .map<int, PieChartSectionData>(
+                                                    (key, data) {
+                                                  final value =
+                                                      PieChartSectionData(
+                                                    color: data.color,
+                                                    value: data.percent,
+                                                    title: '',
+                                                    // radius: radius,
+                                                    titleStyle: TextStyle(
+                                                      // fontSize: fontSize,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white,
+                                                    ),
+                                                  );
+
+                                                  return MapEntry(key, value);
+                                                })
+                                                .values
+                                                .toList(),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          child: ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: controller
+                                                  .spendTypeAll.length,
+                                              itemBuilder: (context, index) {
+                                                PieDataModel data = controller
+                                                    .spendTypeAll[index];
+                                                return Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 1,
+                                                      horizontal: 5),
+                                                  child: Row(
+                                                    children: [
+                                                      CircleAvatar(
+                                                          radius: 5,
+                                                          backgroundColor:
+                                                              data.color),
+                                                      SizedBox(width: 3),
+                                                      Text('${data.name}')
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
