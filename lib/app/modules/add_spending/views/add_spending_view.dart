@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:money_monitoring/app/utils/button_style.dart';
 import 'package:money_monitoring/app/utils/drop_down_style.dart';
+import 'package:money_monitoring/app/utils/number_format.dart';
 import 'package:money_monitoring/app/utils/text_field.dart';
 
 import '../controllers/add_spending_controller.dart';
@@ -74,6 +75,17 @@ class AddSpendingView extends GetView<AddSpendingController> {
                 ),
                 SizedBox(height: 15),
                 TextField(
+                  onChanged: (string) {
+                    if (string != "") {
+                      string =
+                          '${MoneyFormat.formatNumber(string.replaceAll(',', ''))}';
+                      controller.priceC.value = TextEditingValue(
+                        text: string,
+                        selection:
+                            TextSelection.collapsed(offset: string.length),
+                      );
+                    }
+                  },
                   controller: controller.priceC,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   keyboardType: TextInputType.number,

@@ -54,6 +54,10 @@ class AddSpendingController extends GetxController {
   }
 
   Future<void> addSpending(params) async {
+    // ubah format input uang (menghilangkan .)
+    print(priceC.text);
+    int formattedPrice = int.parse(priceC.text.replaceAll('.', ''));
+
     DocumentReference userDocRef =
         await firestore.collection('users').doc(params['loggedInEmail']);
 
@@ -108,7 +112,7 @@ class AddSpendingController extends GetxController {
     await currentDayDoc.collection('records').doc(recordId).set({
       "id": recordId,
       "spentName": spentNameC.text,
-      "total": int.parse(priceC.text),
+      "total": formattedPrice,
       "attachment": photoUrl,
       "createdAt": stringDateNow,
       "updatedAt": stringDateNow,
@@ -120,24 +124,21 @@ class AddSpendingController extends GetxController {
     await currentDayDoc.get().then((value) => spentInDay = value['totalInDay']);
 
     // pengeluaran yang diinput + total pengeluaran perhari
-    await currentDayDoc
-        .update({"totalInDay": spentInDay + int.parse(priceC.text)});
+    await currentDayDoc.update({"totalInDay": spentInDay + formattedPrice});
 
     // tambah pengeluaran perbulan
     int spentInMonth = 0;
     await monthDocRef
         .get()
         .then((value) => spentInMonth = value['totalInMonth']);
-    await monthDocRef
-        .update({"totalInMonth": spentInMonth + int.parse(priceC.text)});
+    await monthDocRef.update({"totalInMonth": spentInMonth + formattedPrice});
 
     // tambah pengeluaran peruser
     int userSpent = 0;
     await userDocRef
         .get()
         .then((value) => userSpent = value['totalEntireSpent']);
-    await userDocRef
-        .update({"totalEntireSpent": userSpent + int.parse(priceC.text)});
+    await userDocRef.update({"totalEntireSpent": userSpent + formattedPrice});
 
     // dialog berhasil
     Get.defaultDialog(

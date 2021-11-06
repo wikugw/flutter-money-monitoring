@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
 import 'package:money_monitoring/app/routes/app_pages.dart';
 import 'package:money_monitoring/app/utils/drop_down_style.dart';
+import 'package:money_monitoring/app/utils/number_format.dart';
 import 'package:money_monitoring/app/utils/text_field.dart';
 import 'package:money_monitoring/app/utils/button_style.dart';
 
@@ -20,7 +21,8 @@ class EditSpendingView extends GetView<EditSpendingController> {
 
     controller.spentNameC.text = record.spentName!;
     controller.spentTypeC.value = record.spentType!;
-    controller.priceC.text = record.total.toString();
+    controller.priceC.text = MoneyFormat.formatNumber(record.total.toString());
+
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
@@ -79,6 +81,17 @@ class EditSpendingView extends GetView<EditSpendingController> {
                 ),
                 SizedBox(height: 15),
                 TextField(
+                  onChanged: (string) {
+                    if (string != "") {
+                      string =
+                          '${MoneyFormat.formatNumber(string.replaceAll(',', ''))}';
+                      controller.priceC.value = TextEditingValue(
+                        text: string,
+                        selection:
+                            TextSelection.collapsed(offset: string.length),
+                      );
+                    }
+                  },
                   controller: controller.priceC,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   keyboardType: TextInputType.number,
@@ -111,7 +124,20 @@ class EditSpendingView extends GetView<EditSpendingController> {
                       Obx(
                         () => controller.isImageChanged.isFalse
                             ? record.attachment == ""
-                                ? SizedBox()
+                                ? Align(
+                                    alignment: Alignment.center,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(60),
+                                      child: Container(
+                                        color: Color(0xFFF6F6F6),
+                                        height: 230,
+                                        width: 230,
+                                        child: Center(
+                                          child: Text('Upload'),
+                                        ),
+                                      ),
+                                    ),
+                                  )
                                 : Align(
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(60),

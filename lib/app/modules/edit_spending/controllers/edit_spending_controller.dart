@@ -62,6 +62,10 @@ class EditSpendingController extends GetxController {
     String currentMonthId = Get.arguments['currentMonthId'];
     String currentDateId = Get.arguments['currentDateId'];
 
+    // ubah format input uang (menghilangkan .)
+    print(priceC.text);
+    int formattedPrice = int.parse(priceC.text.replaceAll('.', ''));
+
     var dateNow = DateTime.now();
     String stringDateNow = dateNow.toIso8601String();
 
@@ -93,37 +97,36 @@ class EditSpendingController extends GetxController {
     DocumentReference recordDoc =
         await dateDoc.collection('records').doc(recordId);
 
-    if (oldTotal != int.parse(priceC.text)) {
+    if (oldTotal != formattedPrice) {
       int spentInDay = 0;
       // mendapatkan total pengeluaran perhari
       await dateDoc.get().then((value) => spentInDay = value['totalInDay']);
 
       // mengurangi pengeluaran perhari dengan pengeluaran lama, kemudian ditambah dengan yang baru
-      await dateDoc.update(
-          {"totalInDay": (spentInDay - oldTotal) + int.parse(priceC.text)});
+      await dateDoc
+          .update({"totalInDay": (spentInDay - oldTotal) + formattedPrice});
 
       // tambah pengeluaran perbulan
       int spentInMonth = 0;
       await monthDoc
           .get()
           .then((value) => spentInMonth = value['totalInMonth']);
-      await monthDoc.update(
-          {"totalInMonth": (spentInMonth - oldTotal) + int.parse(priceC.text)});
+      await monthDoc
+          .update({"totalInMonth": (spentInMonth - oldTotal) + formattedPrice});
 
       // tambah pengeluaran peruser
       int userSpent = 0;
       await userDoc
           .get()
           .then((value) => userSpent = value['totalEntireSpent']);
-      await userDoc.update({
-        "totalEntireSpent": (userSpent - oldTotal) + int.parse(priceC.text)
-      });
+      await userDoc.update(
+          {"totalEntireSpent": (userSpent - oldTotal) + formattedPrice});
     }
 
     // update ke DB
     await recordDoc.update({
       "spentName": spentNameC.text,
-      "total": int.parse(priceC.text),
+      "total": formattedPrice,
       "attachment": photoUrl,
       "updatedAt": stringDateNow,
       "spentType": spentTypeC.value,
@@ -164,25 +167,29 @@ class EditSpendingController extends GetxController {
           DocumentReference recordDoc =
               await dateDoc.collection('records').doc(recordId);
 
+          // ubah format input uang (menghilangkan .)
+          int formattedPrice =
+              int.parse(priceC.text.replaceAll(RegExp('.'), ''));
+          print('$formattedPrice');
+
           // mengurangi pengeluaran total dengan pengeluaran yang dihapus di DB
           int spentInDay = 0;
           await dateDoc.get().then((value) => spentInDay = value['totalInDay']);
-          await dateDoc
-              .update({"totalInDay": spentInDay - int.parse(priceC.text)});
+          await dateDoc.update({"totalInDay": spentInDay - formattedPrice});
 
           int spentInMonth = 0;
           await monthDoc
               .get()
               .then((value) => spentInMonth = value['totalInMonth']);
           await monthDoc
-              .update({"totalInMonth": spentInMonth - int.parse(priceC.text)});
+              .update({"totalInMonth": spentInMonth - formattedPrice});
 
           int userSpent = 0;
           await userDoc
               .get()
               .then((value) => userSpent = value['totalEntireSpent']);
           await userDoc
-              .update({"totalEntireSpent": userSpent - int.parse(priceC.text)});
+              .update({"totalEntireSpent": userSpent - formattedPrice});
 
           String imageUrl = "";
           await recordDoc.get().then((value) => imageUrl = value['attachment']);

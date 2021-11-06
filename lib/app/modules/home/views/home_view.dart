@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:money_monitoring/app/controllers/auth_controller.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
 import 'package:money_monitoring/app/routes/app_pages.dart';
+import 'package:money_monitoring/app/utils/number_format.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -86,7 +87,7 @@ class HomeView extends GetView<HomeController> {
                                       ),
                                       SizedBox(height: 5),
                                       Text(
-                                        'Rp. ${currentMonthRecord?.totalInMonth}',
+                                        'Rp. ${MoneyFormat.formatNumber(currentMonthRecord!.totalInMonth.toString())}',
                                         style: TextStyle(
                                           fontSize: 20,
                                           color: Colors.grey[800],
@@ -102,7 +103,7 @@ class HomeView extends GetView<HomeController> {
                                     const EdgeInsets.symmetric(vertical: 10),
                                 child: Center(
                                   child: Text(
-                                      'Rincian Pengeluaran bulan ${currentMonthRecord!.monthName}'),
+                                      'Rincian Pengeluaran bulan ${currentMonthRecord.monthName}'),
                                 ),
                               ),
                               ListView.builder(
@@ -114,7 +115,8 @@ class HomeView extends GetView<HomeController> {
                                     print(day);
                                     if (day!.records != null) {
                                       return ExpansionTile(
-                                        title: Text('${day.totalInDay}'),
+                                        title: Text(
+                                            '${MoneyFormat.formatNumber(day.totalInDay.toString())}'),
                                         subtitle: Text(
                                           DateFormat.yMMMMd().format(
                                             DateTime.parse(day.date!),
@@ -126,7 +128,7 @@ class HomeView extends GetView<HomeController> {
                                             title: Text(
                                                 '${day.records![index].spentName}'),
                                             subtitle: Text(
-                                                'Rp. ${day.records![index].total}'),
+                                                'Rp. ${MoneyFormat.formatNumber(day.records![index].total.toString())}'),
                                             trailing: IconButton(
                                               onPressed: () {
                                                 // Get.delete<HomeController>();
