@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 
 class DropDownSearchStyle {
+  static List<String> typeList = [
+    "Rumah tangga",
+    "Makanan/Minuman",
+    "Transportasi",
+    "Belanja",
+    "Pendidikan",
+    "Kesehatan",
+    "Perawatan",
+    "Investasi",
+    'Lain - lain'
+  ];
   static InputDecoration getDropDownSearchStyle(String label) {
     return InputDecoration(
       filled: true,

@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:money_monitoring/app/modules/home/data/models/pie_chart_model.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
 
 class HomeController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   var user = UserModel().obs;
   var currentMonthRecord = MoneyHistory().obs;
+  List<String> spendTypeName = [];
+  List<PieDataModel> spendTypeAll = [];
 
   Future<MoneyHistory> getCurrentMonthRecord(String loggedInEmail) async {
     // generate firestore collection user
@@ -104,17 +107,23 @@ class HomeController extends GetxController {
                 if (currentRecordPerDay.docs.length > 0) {
                   for (var item in currentRecordPerDay.docs) {
                     var itemRecord = item.data() as Map<String, dynamic>;
+                    String spendType = itemRecord['spentType'];
                     SpentItemPerDay.add(Records(
                       id: itemRecord['id'],
                       spentName: itemRecord['spentName'],
-                      spentType: itemRecord['spentType'],
+                      spentType: spendType,
                       total: itemRecord['total'],
                       attachment: itemRecord['attachment'],
                       createdAt: itemRecord['createdAt'],
                       updatedAt: itemRecord['updatedAt'],
                     ));
-                  }
 
+                    // buat list type apa aja yang ada
+                    if (!spendTypeName.contains(spendType)) {
+                      spendTypeName.add(spendType);
+                      spendTypeAll.add(PieDataModel(name: spendType));
+                    }
+                  }
                   // ambil hari yang sedang di loopig (dari hari/bulan)
                   // tambahkan list model pengeluaran perhari ke hari tsb
                   Dates perDay = DatePerMonthHistoryList[day];
@@ -127,6 +136,21 @@ class HomeController extends GetxController {
             currentMonthRecord.update((val) {
               val!.dates = DatePerMonthHistoryList;
             });
+
+            // berdasarkan list type, ditambahkan pengeluaran ke masing" tipe
+            if (spendTypeAll.length > 0) {
+              spendTypeAll.forEach((PieDataModel typeEl) {
+                currentMonthRecord.value.dates!.forEach((dayEl) {
+                  dayEl.records?.forEach((recEl) {
+                    if (recEl.spentType == typeEl.name) {
+                      typeEl.updateTotalPrice(recEl.total!);
+                    }
+                  });
+                });
+                typeEl.updatePercentage(currentMonthRecord.value.totalInMonth!);
+                typeEl.setColor();
+              });
+            }
           }
         }
       }

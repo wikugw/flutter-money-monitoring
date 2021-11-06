@@ -57,17 +57,7 @@ class EditSpendingView extends GetView<EditSpendingController> {
                 SizedBox(height: 15),
                 DropdownSearch<String>(
                   mode: Mode.BOTTOM_SHEET,
-                  items: [
-                    "Rumah tangga",
-                    "Makanan/Minuman",
-                    "Transportasi",
-                    "Belanja",
-                    "Pendidikan",
-                    "Kesehatan",
-                    "Perawatan",
-                    "Investasi",
-                    'Lain - lain'
-                  ],
+                  items: DropDownSearchStyle.typeList,
                   dropdownSearchDecoration:
                       DropDownSearchStyle.getDropDownSearchStyle(
                     'Jenis pengeluaran',

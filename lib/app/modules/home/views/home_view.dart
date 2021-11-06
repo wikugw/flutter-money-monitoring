@@ -112,7 +112,7 @@ class HomeView extends GetView<HomeController> {
                                   itemCount: currentMonthRecord.dates?.length,
                                   itemBuilder: (context, index) {
                                     var day = currentMonthRecord.dates?[index];
-                                    print(day);
+                                    // print(day);
                                     if (day!.records != null) {
                                       return ExpansionTile(
                                         title: Text(
