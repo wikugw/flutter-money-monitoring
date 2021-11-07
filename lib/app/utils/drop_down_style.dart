@@ -11,6 +11,7 @@ class DropDownSearchStyle {
     "Perawatan",
     "Investasi",
     "Hobi",
+    "Tempat tinggal",
     'Lain - lain'
   ];
   static InputDecoration getDropDownSearchStyle(String label) {

@@ -29,7 +29,10 @@ class AddSpendingView extends GetView<AddSpendingController> {
         backgroundColor: Colors.white,
         title: Text(
           'Tambah Pengeluaran',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontFamily: 'Roboto'),
         ),
         centerTitle: false,
       ),
@@ -93,6 +96,7 @@ class AddSpendingView extends GetView<AddSpendingController> {
                       child: Text(
                         'Lampiran (Opsional)',
                         style: TextStyle(
+                          fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -214,7 +218,10 @@ class AddSpendingView extends GetView<AddSpendingController> {
                   onPressed: () => controller.addSpending(Get.arguments),
                   child: Text(
                     'Tambah',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
                   ),
                   style: buttonStyle.getButtonStyle(),
                 ),

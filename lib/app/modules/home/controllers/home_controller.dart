@@ -70,6 +70,7 @@ class HomeController extends GetxController {
                 .collection('moneyHistory')
                 .doc(currentMonthRecord.value.id)
                 .collection('dates')
+                .orderBy('dateNumber', descending: true)
                 .get();
 
             List<Dates> DatePerMonthHistoryList = [];

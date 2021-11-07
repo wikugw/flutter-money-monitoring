@@ -23,12 +23,16 @@ class MyApp extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data == true) {
             return GetMaterialApp(
+              theme: ThemeData(fontFamily: 'Roboto'),
+              debugShowCheckedModeBanner: false,
               title: "Application",
               initialRoute: Routes.HOME,
               getPages: AppPages.routes,
             );
           } else {
             return GetMaterialApp(
+              theme: ThemeData(fontFamily: 'Roboto'),
+              debugShowCheckedModeBanner: false,
               title: "Application",
               initialRoute: Routes.LOGIN,
               getPages: AppPages.routes,
@@ -36,6 +40,8 @@ class MyApp extends StatelessWidget {
           }
         }
         return MaterialApp(
+          theme: ThemeData(fontFamily: 'Roboto'),
+          debugShowCheckedModeBanner: false,
           home: Scaffold(body: Center(child: CircularProgressIndicator())),
         );
       },

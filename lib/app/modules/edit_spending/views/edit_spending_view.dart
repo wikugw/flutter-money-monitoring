@@ -29,7 +29,10 @@ class EditSpendingView extends GetView<EditSpendingController> {
       appBar: AppBar(
         title: Text(
           'Rubah Pengeluaran',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style: TextStyle(
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.bold,
+              color: Colors.black),
         ),
         centerTitle: false,
         leading: new IconButton(
@@ -99,6 +102,7 @@ class EditSpendingView extends GetView<EditSpendingController> {
                       child: Text(
                         'Lampiran (Opsional)',
                         style: TextStyle(
+                          fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),

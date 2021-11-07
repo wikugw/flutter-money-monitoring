@@ -47,6 +47,9 @@ class PieDataModel {
       case 'Hobi':
         color = Color(0xffff9500);
         break;
+      case 'Tempat tinggal':
+        color = Color(0xffAA14F0);
+        break;
       case 'Lain - lain':
         color = Color(0xff007aff);
         break;

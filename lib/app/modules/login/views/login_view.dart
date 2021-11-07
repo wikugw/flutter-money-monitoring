@@ -20,7 +20,7 @@ class LoginView extends GetView<LoginController> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: Colors.white,
-              textStyle: TextStyle(color: Colors.black),
+              textStyle: TextStyle(fontFamily: 'Roboto', color: Colors.black),
             ),
             onPressed: () => authC.gmailLogin(),
             child: Container(
@@ -46,6 +46,7 @@ class LoginView extends GetView<LoginController> {
                       child: Text(
                         'Login dengan akun google',
                         style: TextStyle(
+                          fontFamily: 'Roboto',
                           color: Colors.grey[700],
                           fontWeight: FontWeight.w500,
                           fontSize: 20,
