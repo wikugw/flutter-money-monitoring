@@ -32,5 +32,5 @@ flutter:
   fonts:
     - family: Roboto
       fonts:
-        - asset: fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/robotoregular.ttf
 

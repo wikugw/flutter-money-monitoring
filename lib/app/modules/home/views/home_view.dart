@@ -38,7 +38,7 @@ class HomeView extends GetView<HomeController> {
                           : ListView(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.fromLTRB(6, 4, 14, 16),
+                                  padding: EdgeInsets.fromLTRB(6, 0, 14, 16),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -266,85 +266,92 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                   ),
                                 ),
-                                ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: ScrollPhysics(),
-                                    itemCount: currentMonthRecord.dates?.length,
-                                    itemBuilder: (context, index) {
-                                      var day =
-                                          currentMonthRecord.dates?[index];
-                                      // print(day);
-                                      if (day!.records != null) {
-                                        return Card(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: ExpansionTile(
-                                            leading: CircleAvatar(
-                                              backgroundColor: Colors.primaries[
-                                                  Random().nextInt(
-                                                      Colors.primaries.length)],
-                                              child: Text(
-                                                '${day.records!.length}',
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 80.0),
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: ScrollPhysics(),
+                                      itemCount:
+                                          currentMonthRecord.dates?.length,
+                                      itemBuilder: (context, index) {
+                                        var day =
+                                            currentMonthRecord.dates?[index];
+                                        // print(day);
+                                        if (day!.records != null) {
+                                          return Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            child: ExpansionTile(
+                                              leading: CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.primaries[Random()
+                                                        .nextInt(Colors
+                                                            .primaries.length)],
+                                                child: Text(
+                                                  '${day.records!.length}',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                              title: Text(
+                                                'Rp. ${MoneyFormat.formatNumber(day.totalInDay.toString())}',
                                                 style: TextStyle(
                                                   fontFamily: 'Roboto',
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
                                                 ),
                                               ),
-                                            ),
-                                            title: Text(
-                                              'Rp. ${MoneyFormat.formatNumber(day.totalInDay.toString())}',
-                                              style: TextStyle(
-                                                fontFamily: 'Roboto',
-                                                fontWeight: FontWeight.bold,
+                                              subtitle: Text(
+                                                DateFormat.yMMMMd().format(
+                                                  DateTime.parse(day.date!),
+                                                ),
+                                                style: TextStyle(
+                                                    fontFamily: 'Roboto'),
                                               ),
-                                            ),
-                                            subtitle: Text(
-                                              DateFormat.yMMMMd().format(
-                                                DateTime.parse(day.date!),
-                                              ),
-                                              style: TextStyle(
-                                                  fontFamily: 'Roboto'),
-                                            ),
-                                            children: List.generate(
-                                              day.records!.length,
-                                              (index) => ListTile(
-                                                title: Text(
-                                                    '${day.records![index].spentName}'),
-                                                subtitle: Text(
-                                                    'Rp. ${MoneyFormat.formatNumber(day.records![index].total.toString())}'),
-                                                trailing: IconButton(
-                                                  onPressed: () {
-                                                    // Get.delete<HomeController>();
-                                                    Get.toNamed(
-                                                        Routes.EDIT_SPENDING,
-                                                        arguments: {
-                                                          "record": day
-                                                              .records![index],
-                                                          "loggedInEmail": authC
-                                                              .user.value.email,
-                                                          "currentMonthId":
-                                                              currentMonthRecord
-                                                                  .id,
-                                                          "currentDateId":
-                                                              day.id,
-                                                        });
-                                                  },
-                                                  icon: Icon(
-                                                    Icons.edit,
-                                                    color: Colors.black,
+                                              children: List.generate(
+                                                day.records!.length,
+                                                (index) => ListTile(
+                                                  title: Text(
+                                                      '${day.records![index].spentName}'),
+                                                  subtitle: Text(
+                                                      'Rp. ${MoneyFormat.formatNumber(day.records![index].total.toString())}'),
+                                                  trailing: IconButton(
+                                                    onPressed: () {
+                                                      // Get.delete<HomeController>();
+                                                      Get.toNamed(
+                                                          Routes.EDIT_SPENDING,
+                                                          arguments: {
+                                                            "record":
+                                                                day.records![
+                                                                    index],
+                                                            "loggedInEmail":
+                                                                authC.user.value
+                                                                    .email,
+                                                            "currentMonthId":
+                                                                currentMonthRecord
+                                                                    .id,
+                                                            "currentDateId":
+                                                                day.id,
+                                                          });
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.edit,
+                                                      color: Colors.black,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      } else {
-                                        return SizedBox();
-                                      }
-                                    }),
+                                          );
+                                        } else {
+                                          return SizedBox();
+                                        }
+                                      }),
+                                ),
                               ],
                             ),
                     ),
