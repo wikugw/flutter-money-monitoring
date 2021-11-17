@@ -84,7 +84,7 @@ class AddSpendingController extends GetxController {
         "id": UID,
         "date": stringDateNow,
         "totalInDay": 0,
-        "dateNumber": dateNumber
+        "dateNumber": int.parse(dateNumber)
       });
     }
 
