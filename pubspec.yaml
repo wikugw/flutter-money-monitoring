@@ -18,6 +18,8 @@ dependencies:
   firebase_storage: 10.0.5
   random_string: 2.3.1
   fl_chart: 0.40.2
+  flutter_local_notifications: 9.1.4
+  rxdart: 0.27.2
   flutter: 
     sdk: flutter
 
@@ -28,9 +30,9 @@ dev_dependencies:
 flutter: 
   assets: 
     - assets/logo/
-  uses-material-design: true
-  fonts:
+  fonts: 
     - family: Roboto
-      fonts:
+      fonts: 
         - asset: assets/fonts/robotoregular.ttf
+  uses-material-design: true
 

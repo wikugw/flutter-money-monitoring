@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:money_monitoring/app/modules/home/data/models/pie_chart_model.dart';
 import 'package:money_monitoring/app/modules/home/data/models/user_model.dart';
+import 'package:money_monitoring/app/utils/notification_manager.dart';
 
 class HomeController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -10,6 +12,17 @@ class HomeController extends GetxController {
   var currentMonthRecord = MoneyHistory().obs;
   List<String> spendTypeName = [];
   List<PieDataModel> spendTypeAll = [];
+
+  Future<void> sendReminderNotification() async {
+    await notificationManager.scheduledNotification();
+    Get.defaultDialog(
+      title: 'Reminder berhasil dibuat',
+      middleText: 'Reminder akan muncul 10 menit lagi berupa notifikasi',
+      onConfirm: () => Get.back(),
+      textConfirm: 'OK',
+      confirmTextColor: Colors.white,
+    );
+  }
 
   Future<MoneyHistory> getCurrentMonthRecord(String loggedInEmail) async {
     // generate firestore collection user
@@ -160,5 +173,11 @@ class HomeController extends GetxController {
       print(e);
       return currentMonthRecord.value;
     }
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
   }
 }

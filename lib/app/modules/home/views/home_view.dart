@@ -252,6 +252,70 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                   ),
                                 ),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(30),
+                                  child: Card(
+                                    child: Container(
+                                      width: Get.width - 20,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 10,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 4,
+                                            child: Container(
+                                                child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Tidak Sempat mengisi pengeluaran sekarang?',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 5),
+                                                Text(
+                                                  'Ingatkan saya 10 menit lagi',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ],
+                                            )),
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Container(
+                                              child: ElevatedButton(
+                                                onPressed: () => controller
+                                                    .sendReminderNotification(),
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: Color(0xff0071FF),
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 15),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        new BorderRadius
+                                                            .circular(15.0),
+                                                  ),
+                                                ),
+                                                child:
+                                                    Icon(Icons.notifications),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 10,

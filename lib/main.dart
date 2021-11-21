@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import 'app/controllers/auth_controller.dart';
 import 'app/routes/app_pages.dart';
+import 'app/utils/notification_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,8 +13,29 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final authC = Get.put(AuthController(), permanent: true);
+
+  @override
+  void initState() {
+    super.initState();
+    notificationManager.setOnNotkificationReceive(onNotificationReceive);
+    notificationManager.setOnNotificationClick(onNotificatioinClick);
+  }
+
+  onNotificationReceive(notification) {
+    print('Notification Received: ${notification.id}');
+  }
+
+  onNotificatioinClick(payload) {
+    print('Payload $payload');
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
