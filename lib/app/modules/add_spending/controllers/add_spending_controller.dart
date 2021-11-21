@@ -55,7 +55,6 @@ class AddSpendingController extends GetxController {
 
   Future<void> addSpending(params) async {
     // ubah format input uang (menghilangkan .)
-    print(priceC.text);
     int formattedPrice = int.parse(priceC.text.replaceAll('.', ''));
 
     DocumentReference userDocRef =
@@ -72,14 +71,15 @@ class AddSpendingController extends GetxController {
     String year = DateFormat.y().format(dateNow);
     // untuk id document
     String UID = dateNumber + '-' + monthName + '-' + year;
-
+    int dateNumberInt = int.parse(dateNumber);
     CollectionReference dateDocRef = await monthDocRef.collection('dates');
 
     QuerySnapshot todayDocRecord =
-        await dateDocRef.where('dateNumber', isEqualTo: dateNumber).get();
+        await dateDocRef.where('dateNumber', isEqualTo: dateNumberInt).get();
 
     // tambah data hari ini ke DB
     if (todayDocRecord.docs.length == 0) {
+      print('kesini');
       await dateDocRef.doc(UID).set({
         "id": UID,
         "date": stringDateNow,
@@ -121,10 +121,21 @@ class AddSpendingController extends GetxController {
 
     int spentInDay = 0;
     // mendapatkan total pengeluaran perhari
-    await currentDayDoc.get().then((value) => spentInDay = value['totalInDay']);
-
+    await currentDayDoc.get().then((value) {
+      print('-------data dari firebase--------');
+      print(value['dateNumber']);
+      print(value['id']);
+      print(value['totalInDay']);
+      print('-------data dari firebase--------');
+      spentInDay = value['totalInDay'];
+    });
+    print('spentInDay $spentInDay');
+    print('formattedPrice $formattedPrice');
     // pengeluaran yang diinput + total pengeluaran perhari
     await currentDayDoc.update({"totalInDay": spentInDay + formattedPrice});
+    await currentDayDoc
+        .get()
+        .then((value) => print('hasil update ${value['totalInDay']}'));
 
     // tambah pengeluaran perbulan
     int spentInMonth = 0;

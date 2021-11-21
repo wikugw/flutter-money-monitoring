@@ -166,12 +166,10 @@ class EditSpendingController extends GetxController {
               await monthDoc.collection('dates').doc(currentDateId);
           DocumentReference recordDoc =
               await dateDoc.collection('records').doc(recordId);
-
           // ubah format input uang (menghilangkan .)
-          int formattedPrice =
-              int.parse(priceC.text.replaceAll(RegExp('.'), ''));
-          print('$formattedPrice');
+          String formattedPriceString = priceC.text.replaceAll('.', '');
 
+          int formattedPrice = int.parse(formattedPriceString);
           // mengurangi pengeluaran total dengan pengeluaran yang dihapus di DB
           int spentInDay = 0;
           await dateDoc.get().then((value) => spentInDay = value['totalInDay']);
